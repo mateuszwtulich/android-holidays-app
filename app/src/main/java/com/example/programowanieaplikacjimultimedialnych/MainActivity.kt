@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewWordActivity::class.java)
+            val intent = Intent(this@MainActivity, NewPostActivity::class.java)
             startActivityForResult(intent, newWordActivityRequestCode)
         }
     }
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newWordActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NewWordActivity.EXTRA_REPLY)?.let {
+            data?.getStringExtra(NewPostActivity.EXTRA_REPLY)?.let {
                 val word = Word(it)
                 wordViewModel.insert(word)
             }
