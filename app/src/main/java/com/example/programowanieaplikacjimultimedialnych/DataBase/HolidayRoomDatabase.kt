@@ -1,4 +1,4 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.DataBase
 
 import android.content.Context
 import androidx.room.Database
@@ -10,7 +10,7 @@ import com.example.programowanieaplikacjimultimedialnych.Model.Post
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
 @Database(entities = arrayOf(Post::class, MultimediaPath::class, Location::class), version = 1, exportSchema = false) //export Schema w normalnej apce inaczej
-public abstract class HolidayRoomDatabase : RoomDatabase() {
+abstract class HolidayRoomDatabase : RoomDatabase() {
 
     abstract fun holidayDao(): HolidayDao
 
@@ -21,7 +21,8 @@ public abstract class HolidayRoomDatabase : RoomDatabase() {
         private var INSTANCE: HolidayRoomDatabase? = null
 
         fun getDatabase(context: Context): HolidayRoomDatabase {
-            val tempInstance = INSTANCE
+            val tempInstance =
+                INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }

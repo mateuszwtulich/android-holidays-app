@@ -1,20 +1,15 @@
 package com.example.programowanieaplikacjimultimedialnych.Model
 
-
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-import java.util.*
+import androidx.room.*
 
 
 @Entity(tableName = "post_table", foreignKeys = arrayOf(ForeignKey(entity = Location::class,
-                                                parentColumns = arrayOf("location_id"),
-                                                childColumns =  arrayOf("id"),
+                                                parentColumns = arrayOf("id"),
+                                                childColumns =  arrayOf("location_id"),
                                                 onDelete = ForeignKey.CASCADE)))
 class Post(@PrimaryKey(autoGenerate = true) val id: Int,
            val title : String,
            val text : String,
-           @ColumnInfo(name ="location_id") val locationId: Int,
-           val date : Date)
+           @ColumnInfo(name ="location_id" , index = true) val locationId: Int,
+           val date : String)
 

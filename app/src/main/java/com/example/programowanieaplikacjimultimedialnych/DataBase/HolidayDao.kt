@@ -1,12 +1,10 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.DataBase
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.example.programowanieaplikacjimultimedialnych.Model.Location
 import com.example.programowanieaplikacjimultimedialnych.Model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.Model.Post
-import java.nio.file.Path
 
 @Dao
 interface HolidayDao {
@@ -23,20 +21,20 @@ interface HolidayDao {
     @Query("Select * from location_table where id=:locationId")
     fun getLocation(locationId: Int): Location
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(post: Post)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(path: MultimediaPath)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(location: Location)
 
     @Update
     suspend fun updatePost(post: Post)
 
     @Update
-    suspend fun updatePath(path: Path)
+    suspend fun updatePath(path: MultimediaPath)
 
     @Update
     suspend fun updateLocation(location: Location)
@@ -45,7 +43,7 @@ interface HolidayDao {
     suspend fun deletePost(post: Post)
 
     @Delete
-    suspend fun deletePath(path: Path)
+    suspend fun deletePath(path: MultimediaPath)
 
     @Delete
     suspend fun deleteLocation(location: Location)

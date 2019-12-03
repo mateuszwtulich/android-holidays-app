@@ -1,12 +1,9 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.DataBase
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.example.programowanieaplikacjimultimedialnych.Model.Location
 import com.example.programowanieaplikacjimultimedialnych.Model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.Model.Post
-import com.example.programowanieaplikacjimultimedialnych.HolidayDao
-import java.nio.file.Path
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
@@ -39,7 +36,7 @@ class HolidayRepository(private val holidayDao: HolidayDao) {
         holidayDao.deletePost(post)
     }
 
-    suspend fun deletePath(path: Path){
+    suspend fun deletePath(path: MultimediaPath){
         holidayDao.deletePath(path)
     }
 

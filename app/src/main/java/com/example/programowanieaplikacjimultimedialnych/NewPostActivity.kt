@@ -10,35 +10,33 @@ import android.widget.EditText
 
 class NewPostActivity : AppCompatActivity() {
 
-    private lateinit var editWordView: EditText
+    private lateinit var editTitleView: EditText
+    private lateinit var editTextView: EditText
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_word)
-        editWordView = findViewById(R.id.edit_word)
+        editTitleView = findViewById(R.id.editTitle)
+        editTextView = findViewById(R.id.editText)
 
         val button = findViewById<Button>(R.id.button_save)
 
         button.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(editWordView.text)) {
+            if (TextUtils.isEmpty(editTitleView.text) || TextUtils.isEmpty(editTextView.text)) {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
-                val word = editWordView.text.toString()
-                replyIntent.putExtra(EXTRA_REPLY, word)
+
+                val title = editTitleView.text.toString()
+                val text = editTextView.text.toString()
+
+                replyIntent.putExtra("title",title)
+                replyIntent.putExtra("text",text)
                 setResult(Activity.RESULT_OK, replyIntent)
             }
             finish()
         }
 
-        val addImage = findViewById<Button>(R.id.addImage)
-        addImage.setOnClickListener {
-
-
-        }
     }
 
-    companion object {
-        const val EXTRA_REPLY = "com.example.android.wordlistsql.REPLY"
-    }
 }
