@@ -18,8 +18,9 @@ interface HolidayDao {
     @Query("Select * from multimediaPath_table where post_id=:postId")
     fun getMultimediaPaths(postId: Int): List<MultimediaPath>
 
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(post: Post)
+    suspend fun  insert(post: Post):Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(path: MultimediaPath)

@@ -1,9 +1,11 @@
 package com.example.programowanieaplikacjimultimedialnych
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.programowanieaplikacjimultimedialnych.database.PostDto
@@ -17,6 +19,7 @@ class HolidayListAdapter internal constructor(context: Context) : RecyclerView.A
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
         val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
+        val imageItemView: ImageView = itemView.findViewById(R.id.imageView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolidayViewHolder {
@@ -29,7 +32,6 @@ class HolidayListAdapter internal constructor(context: Context) : RecyclerView.A
         val current = posts[position]
         holder.titleItemView.text = current.title
         holder.textItemView.text = current.text
-
     }
 
     internal fun setPosts(posts: List<PostDto>) {

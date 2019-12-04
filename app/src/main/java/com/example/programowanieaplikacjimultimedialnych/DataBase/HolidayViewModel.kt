@@ -1,6 +1,7 @@
 package com.example.programowanieaplikacjimultimedialnych.database
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -20,6 +21,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
 
     val allPosts: LiveData<List<PostDto>>
 
+
     init {
         // Gets reference to WordDao from HolidayRoomDatabase to construct
         // the correct WordRepository.
@@ -28,6 +30,8 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
         allPosts = getPosts()
     }
 
+
+    //multimedia path to uri
     fun getPost(postId: Int): LiveData<PostDto> {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -38,7 +42,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
                 input.text,
                 Pair(input.latitude,input.attitude),
                 LocalDate.parse(input.date,formatter),
-                listOf(MultimediaPath(0,"13",0))
+                uriList
             )
         }
 
@@ -46,6 +50,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
 
     private fun getPosts() : LiveData<List<PostDto>> {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
         return Transformations.map(repository.allPosts) { post -> post.map{ input ->
             PostDto(
                 input.id,
@@ -53,7 +58,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
                 input.text,
                 Pair(input.latitude,input.attitude),
                 LocalDate.parse(input.date,formatter),
-                listOf(MultimediaPath(0,"13",0))
+                listUri
             )
         }}
     }
@@ -63,6 +68,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
         var post = Post(0, postDto.title, postDto.text,
             postDto.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
             postDto.location.first,postDto.location.second)
-        repository.insertPost(post)
+        val id = repository.insertPost(post).toInt()
+        postDto.uriList.forEach { path -> repository.insertPath(MultimediaPath(0,path.toString(),id)) }
     }
 }

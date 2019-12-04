@@ -12,5 +12,5 @@ import androidx.room.ForeignKey
                                             onDelete = ForeignKey.CASCADE)))
 class MultimediaPath(@PrimaryKey(autoGenerate = true) val id: Int,
                      val path : String,
-                     @ColumnInfo(name ="post_id", index = true) val postId : Int ) //index = true not to run on all database
+                     @ColumnInfo(name ="post_id", index = true) val postId : Int) //index = true not to run on all database
 

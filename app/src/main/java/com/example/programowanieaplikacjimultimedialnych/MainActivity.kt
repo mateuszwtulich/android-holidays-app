@@ -2,12 +2,12 @@ package com.example.programowanieaplikacjimultimedialnych
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.programowanieaplikacjimultimedialnych.database.HolidayViewModel
@@ -31,17 +31,10 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                LinearLayoutManager.HORIZONTAL
-            )
-        )
-
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
         holidayViewModel.allPosts.observe(this, Observer { posts ->
             // Update the cached copy of the words in the adapter.
-            posts?.let {adapter.setPosts(it) }
+            posts?.let {adapter.setPosts(it)}
         })
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -57,19 +50,20 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == newPostActivityRequestCode && resultCode == Activity.RESULT_OK) {
                 val title = data?.getStringExtra("title")
                 val text = data?.getStringExtra("text")
+                val uri = data?.getStringExtra("image")
 
-                if(title != null && text != null){
+                if(title != null && text != null && uri != null){
                     val noNullTitle = title
                     val noNullText = text
                     val post = PostDto(
                         id = 0,
                         title = noNullTitle,
-                        text = noNullText
+                        text = noNullText,
+                        uriList = mutableListOf(Uri.parse(uri)),
+                        boolean = true
                     )
                     holidayViewModel.insert(post)
                 }
-            //}
-
         } else {
             Toast.makeText(
                 applicationContext,

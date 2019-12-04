@@ -18,8 +18,8 @@ class HolidayRepository(private val holidayDao: HolidayDao) {
 
     fun getPaths(postId: Int): List<MultimediaPath> = holidayDao.getMultimediaPaths(postId)
 
-    suspend fun insertPost(post: Post) {
-        holidayDao.insert(post)
+    suspend fun insertPost(post: Post):Long {
+        return holidayDao.insert(post)
     }
 
     suspend fun insertPath(path: MultimediaPath) {
