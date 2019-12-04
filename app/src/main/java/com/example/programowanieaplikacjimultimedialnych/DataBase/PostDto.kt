@@ -1,16 +1,15 @@
-package com.example.programowanieaplikacjimultimedialnych.DataBase
+package com.example.programowanieaplikacjimultimedialnych.database
 
-import androidx.lifecycle.LiveData
-import androidx.room.ColumnInfo
-import com.example.programowanieaplikacjimultimedialnych.Model.Location
-import com.example.programowanieaplikacjimultimedialnych.Model.MultimediaPath
-import java.util.*
+import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
+import java.time.LocalDate
+import java.time.Month
+
 
 //dto - data transfer object
 class PostDto (
     var id : Int,
     var title : String,
     var text : String,
-    var location : Location = Location(0,12.0,12.0),
-    var date : Date = Date(),
+    var location : Pair<Double,Double> = Pair(8.0,8.0),
+    var date  : LocalDate = LocalDate.of(2016, Month.APRIL, 15),
     var multimediaPaths : List<MultimediaPath> = listOf(MultimediaPath(0,"13",0)))

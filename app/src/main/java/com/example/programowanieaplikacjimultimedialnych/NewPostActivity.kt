@@ -1,12 +1,19 @@
 package com.example.programowanieaplikacjimultimedialnych
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_new_word.*
+import kotlinx.android.synthetic.main.recyclerview_item.*
 
 class NewPostActivity : AppCompatActivity() {
 
@@ -36,7 +43,6 @@ class NewPostActivity : AppCompatActivity() {
             }
             finish()
         }
-
     }
 
 }

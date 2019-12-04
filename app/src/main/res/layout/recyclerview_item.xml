@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical" android:layout_width="wrap_content"
+              android:layout_width="fill_parent"
               android:layout_height="wrap_content"
+              android:orientation="vertical"
               android:background="@color/secondary"
-              android:visibility="visible">
+              android:gravity="center_vertical"
+              android:divider="@color/colorPrimary"
+              android:dividerHeight = "8dp">
 
     <ImageView
-            android:layout_width="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:id="@+id/imageView"
-            android:background="@android:color/holo_orange_light" android:layout_height="200dp"
-            android:scaleType="centerCrop"/>
+            android:layout_width="match_parent"
+            android:layout_height="275dp" tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:id="@+id/imageView"/>
     <TextView
             android:id="@+id/Title"
             style="@style/word_title"
             android:layout_width="match_parent"
-            android:background="@color/secondary"
+            android:background="@drawable/gradient"
             android:layout_height="42dp"
             android:text="@string/example_title"
             android:ellipsize="end"
@@ -28,29 +29,8 @@
             android:layout_width="match_parent"
             android:background="@color/secondary"
             android:layout_height="wrap_content"
-            android:text="@string/example_text"
+            android:text="XDD"
             android:ellipsize="end"
             android:maxLines="4"
             android:textSize="18sp"/>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="@color/secondary">
-        <TextView
-                android:text="France, Marsylia"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView5" android:layout_weight="1"
-                android:layout_gravity="center" android:gravity="center" android:textSize="12sp"
-        />
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView7" android:layout_weight="1"
-                android:text="      "/>
-        <TextView
-                android:text="10.08.2019"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/textView6" android:layout_weight="1"
-                android:layout_gravity="center" android:gravity="center" android:textSize="12sp"/>
-    </LinearLayout>
 </LinearLayout>  <!-- Ogarnąć czcionki -->

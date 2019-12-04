@@ -5,5 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="buttonLabel">#d3d3d3</color>
     <color name="primary">#E0D3AF</color>
+    <color name="primaryDark">#E0D3AF</color>
     <color name="secondary">#AFBCE0</color>
+    <color name="secondaryDark">#7A91C8</color>
 </resources>

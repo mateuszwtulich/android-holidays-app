@@ -1,13 +1,16 @@
-package com.example.programowanieaplikacjimultimedialnych.DataBase
+package com.example.programowanieaplikacjimultimedialnych.database
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import com.example.programowanieaplikacjimultimedialnych.Model.Post
+import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
+import com.example.programowanieaplikacjimultimedialnych.model.Post
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 
 // Class extends AndroidViewModel and requires application as a parameter.
 class HolidayViewModel(application: Application) : AndroidViewModel(application) {
@@ -26,37 +29,40 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun getPost(postId: Int): LiveData<PostDto> {
-        return Transformations.map(repository.getPost(postId) , {input ->
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+        return Transformations.map(repository.getPost(postId)) { input ->
             PostDto(
                 input.id,
                 input.title,
                 input.text,
-                repository.getLocation(input.id),
-                SimpleDateFormat("dd/MM/yyyy").parse(input.date),
-                repository.getPaths(input.id)
+                Pair(input.latitude,input.attitude),
+                LocalDate.parse(input.date,formatter),
+                listOf(MultimediaPath(0,"13",0))
             )
-        })
-
         }
 
+    }
+
     private fun getPosts() : LiveData<List<PostDto>> {
-        return Transformations.map(repository.allPosts, {post -> post.map{ input ->
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        return Transformations.map(repository.allPosts) { post -> post.map{ input ->
             PostDto(
                 input.id,
                 input.title,
                 input.text,
-                repository.getLocation(input.id),
-                SimpleDateFormat("dd/MM/yyyy").parse(input.date),
-                repository.getPaths(input.id)
+                Pair(input.latitude,input.attitude),
+                LocalDate.parse(input.date,formatter),
+                listOf(MultimediaPath(0,"13",0))
             )
-        }})
+        }}
     }
 
     //do naprawy
     fun insert(postDto: PostDto) = viewModelScope.launch {
-        repository.insertLocation(postDto.location)
-        var post = Post(0, postDto.title, postDto.text, postDto.location.id, postDto.date.toString())
+        var post = Post(0, postDto.title, postDto.text,
+            postDto.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+            postDto.location.first,postDto.location.second)
         repository.insertPost(post)
-        postDto.multimediaPaths.forEach { path -> repository.insertPath(path)
-    } }
+    }
 }

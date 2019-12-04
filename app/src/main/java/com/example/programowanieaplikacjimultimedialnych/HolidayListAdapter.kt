@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.programowanieaplikacjimultimedialnych.DataBase.PostDto
+import com.example.programowanieaplikacjimultimedialnych.database.PostDto
 
 class HolidayListAdapter internal constructor(context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>() {
 

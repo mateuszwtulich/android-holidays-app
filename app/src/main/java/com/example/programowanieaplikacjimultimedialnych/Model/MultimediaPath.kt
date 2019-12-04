@@ -1,4 +1,4 @@
-package com.example.programowanieaplikacjimultimedialnych.Model
+package com.example.programowanieaplikacjimultimedialnych.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

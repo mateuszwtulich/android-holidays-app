@@ -1,15 +1,15 @@
-package com.example.programowanieaplikacjimultimedialnych.DataBase
+package com.example.programowanieaplikacjimultimedialnych.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.programowanieaplikacjimultimedialnych.Model.Location
-import com.example.programowanieaplikacjimultimedialnych.Model.MultimediaPath
-import com.example.programowanieaplikacjimultimedialnych.Model.Post
+import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
+import com.example.programowanieaplikacjimultimedialnych.model.Post
+
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Post::class, MultimediaPath::class, Location::class), version = 1, exportSchema = false) //export Schema w normalnej apce inaczej
+@Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 2, exportSchema = false) //export Schema w normalnej apce inaczej
 abstract class HolidayRoomDatabase : RoomDatabase() {
 
     abstract fun holidayDao(): HolidayDao
