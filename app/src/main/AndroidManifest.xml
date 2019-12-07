@@ -13,8 +13,8 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
 
-        <activity android:name=".NewPostActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".ControllerUI.NewPostActivity"></activity>
+        <activity android:name=".ControllerUI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

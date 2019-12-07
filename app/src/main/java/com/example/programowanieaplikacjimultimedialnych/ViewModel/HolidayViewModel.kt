@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.example.programowanieaplikacjimultimedialnych.ViewModel.DTO.PostDtoInput
 import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.model.Post
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
     // The ViewModel maintains a reference to the repository to get data.
     private val repository: HolidayRepository
 
-    val allPosts: LiveData<List<PostDto>>
+    val allPosts: LiveData<List<PostDtoOutput>>
 
 
     init {
@@ -31,44 +32,50 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
     }
 
 
-    //multimedia path to uri
-    fun getPost(postId: Int): LiveData<PostDto> {
+    fun getPost(postId: Int): LiveData<PostDtoOutput> {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
         return Transformations.map(repository.getPost(postId)) { input ->
-            PostDto(
+            PostDtoOutput(
                 input.id,
                 input.title,
                 input.text,
-                Pair(input.latitude,input.attitude),
-                LocalDate.parse(input.date,formatter),
-                uriList
+                Pair(input.latitude, input.attitude),
+                LocalDate.parse(input.date, formatter),
+                Transformations.map(repository.getPaths(input.id)) { multimediaPathList ->
+                    multimediaPathList.map { multimediaPath -> Uri.parse(multimediaPath.path) }
+                }
             )
         }
-
     }
 
-    private fun getPosts() : LiveData<List<PostDto>> {
+    private fun getPosts(): LiveData<List<PostDtoOutput>> {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-        return Transformations.map(repository.allPosts) { post -> post.map{ input ->
-            PostDto(
-                input.id,
-                input.title,
-                input.text,
-                Pair(input.latitude,input.attitude),
-                LocalDate.parse(input.date,formatter),
-                listUri
-            )
-        }}
+        return Transformations.map(repository.allPosts) { post ->
+            post.map { input ->
+                PostDtoOutput(
+                    input.id,
+                    input.title,
+                    input.text,
+                    Pair(input.latitude, input.attitude),
+                    LocalDate.parse(input.date, formatter),
+                    Transformations.map(repository.getPaths(input.id)) { multimediaPathList ->
+                        multimediaPathList.map { multimediaPath -> Uri.parse(multimediaPath.path) }
+                    }
+                )
+            }
+        }
     }
 
     //do naprawy
-    fun insert(postDto: PostDto) = viewModelScope.launch {
-        var post = Post(0, postDto.title, postDto.text,
+    fun insert(postDto: PostDtoInput) = viewModelScope.launch {
+        var post = Post(
+            0, postDto.title, postDto.text,
             postDto.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-            postDto.location.first,postDto.location.second)
+            postDto.location.first, postDto.location.second
+        )
         val id = repository.insertPost(post).toInt()
-        postDto.uriList.forEach { path -> repository.insertPath(MultimediaPath(0,path.toString(),id)) }
+        postDto.uriList.forEach { path -> repository.insertPath(MultimediaPath(0, path.toString(), id)) }
     }
 }

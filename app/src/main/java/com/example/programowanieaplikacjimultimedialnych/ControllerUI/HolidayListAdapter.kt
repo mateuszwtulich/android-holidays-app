@@ -1,13 +1,13 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.ControllerUI
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.database.PostDto
 
 class HolidayListAdapter internal constructor(context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>() {

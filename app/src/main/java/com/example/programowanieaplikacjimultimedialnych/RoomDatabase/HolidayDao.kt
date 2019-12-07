@@ -1,6 +1,7 @@
 package com.example.programowanieaplikacjimultimedialnych.database
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.model.Post
@@ -16,7 +17,7 @@ interface HolidayDao {
     fun getPost(postId: Int): LiveData<Post>
 
     @Query("Select * from multimediaPath_table where post_id=:postId")
-    fun getMultimediaPaths(postId: Int): List<MultimediaPath>
+    fun getMultimediaPaths(postId: Int): LiveData<List<MultimediaPath>>
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

@@ -1,4 +1,4 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.ControllerUI
 
 import android.app.Activity
 import android.content.Intent
@@ -10,8 +10,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.programowanieaplikacjimultimedialnych.ViewModel.DTO.PostDtoInput
+import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.database.HolidayViewModel
-import com.example.programowanieaplikacjimultimedialnych.database.PostDto
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -55,12 +56,11 @@ class MainActivity : AppCompatActivity() {
                 if(title != null && text != null && uri != null){
                     val noNullTitle = title
                     val noNullText = text
-                    val post = PostDto(
+                    val post = PostDtoInput(
                         id = 0,
                         title = noNullTitle,
                         text = noNullText,
-                        uriList = mutableListOf(Uri.parse(uri)),
-                        boolean = true
+                        uriList = listOf(Uri.parse(uri))
                     )
                     holidayViewModel.insert(post)
                 }

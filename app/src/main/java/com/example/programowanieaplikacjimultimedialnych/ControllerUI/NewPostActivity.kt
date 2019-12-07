@@ -1,7 +1,6 @@
-package com.example.programowanieaplikacjimultimedialnych
+package com.example.programowanieaplikacjimultimedialnych.ControllerUI
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +12,7 @@ import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.programowanieaplikacjimultimedialnych.R
 import kotlinx.android.synthetic.main.activity_new_word.*
 
 
@@ -54,7 +54,9 @@ class NewPostActivity : AppCompatActivity() {
                 //permission denied
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
                 //show popup to request runtime permission
-                requestPermissions(permissions, PERMISSION_CODE);
+                requestPermissions(permissions,
+                    PERMISSION_CODE
+                );
             } else {
                 //permission already granted
                 pickImageFromGallery();
@@ -66,7 +68,9 @@ class NewPostActivity : AppCompatActivity() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_PICK_CODE)
+        startActivityForResult(intent,
+            IMAGE_PICK_CODE
+        )
     }
 
     companion object {
