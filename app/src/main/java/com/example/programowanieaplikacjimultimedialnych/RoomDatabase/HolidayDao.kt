@@ -16,9 +16,8 @@ interface HolidayDao {
     @Query("Select * from post_table where id=:postId")
     fun getPost(postId: Int): LiveData<Post>
 
-    @Query("Select * from multimediaPath_table where post_id=:postId")
-    fun getMultimediaPaths(postId: Int): LiveData<List<MultimediaPath>>
-
+    @Query("Select * from multimediaPath_table where post_id = :postId")
+    suspend fun getMulitmediaPaths(postId: Int): List<MultimediaPath>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun  insert(post: Post):Long
@@ -42,6 +41,6 @@ interface HolidayDao {
     suspend fun deleteAllPosts()
 
     @Query("DELETE FROM multimediaPath_table")
-    suspend fun deletePaths()
+    suspend fun deleteAllPaths()
 
 }

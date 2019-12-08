@@ -13,7 +13,7 @@ class PostDtoOutput (
     var text : String,
     var location : Pair<Double,Double> = Pair(8.0,8.0),
     var date  : LocalDate = LocalDate.of(2016, Month.APRIL, 15),
-    var uriList: LiveData<List<Uri>>
+    var uriList: List<Uri>
 )
 //
 //    constructor(id: Int,

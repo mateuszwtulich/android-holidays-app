@@ -1,7 +1,6 @@
 package com.example.programowanieaplikacjimultimedialnych.database
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.model.Post
 
@@ -17,7 +16,7 @@ class HolidayRepository(private val holidayDao: HolidayDao) {
 
     fun getPost(postId: Int): LiveData<Post> = holidayDao.getPost(postId)
 
-    fun getPaths(postId: Int): LiveData<List<MultimediaPath>> = holidayDao.getMultimediaPaths(postId)
+    suspend fun getMulitmediaPaths(postId: Int): List<MultimediaPath> = holidayDao.getMulitmediaPaths(postId)
 
     suspend fun insertPost(post: Post):Long {
         return holidayDao.insert(post)
@@ -35,6 +34,13 @@ class HolidayRepository(private val holidayDao: HolidayDao) {
         holidayDao.deletePath(path)
     }
 
+    suspend fun deleteAllPost(){
+        holidayDao.deleteAllPosts()
+    }
+
+    suspend fun deleteAllPath(){
+        holidayDao.deleteAllPaths()
+    }
 
 
 }

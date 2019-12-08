@@ -15,8 +15,6 @@ import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.database.HolidayViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
-
 class MainActivity : AppCompatActivity() {
 
     private val newPostActivityRequestCode = 1
@@ -33,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
+
         holidayViewModel.allPosts.observe(this, Observer { posts ->
             // Update the cached copy of the words in the adapter.
             posts?.let {adapter.setPosts(it)}

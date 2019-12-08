@@ -8,13 +8,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.programowanieaplikacjimultimedialnych.R
-import com.example.programowanieaplikacjimultimedialnych.database.PostDto
+import com.example.programowanieaplikacjimultimedialnych.database.PostDtoOutput
+
 
 class HolidayListAdapter internal constructor(context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var posts = emptyList<PostDto>() // Cached copy of words
-
+    private var posts = emptyList<PostDtoOutput>() // Cached copy of words
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
@@ -25,16 +25,17 @@ class HolidayListAdapter internal constructor(context: Context) : RecyclerView.A
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolidayViewHolder {
         val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
         return HolidayViewHolder(itemView)
-
     }
 
     override fun onBindViewHolder(holder: HolidayViewHolder, position: Int) {
         val current = posts[position]
         holder.titleItemView.text = current.title
         holder.textItemView.text = current.text
+        if(current.uriList != null)
+            holder.imageItemView.setImageURI(current.uriList[0])
     }
 
-    internal fun setPosts(posts: List<PostDto>) {
+    internal fun setPosts(posts: List<PostDtoOutput>) {
         this.posts = posts
         notifyDataSetChanged()
     }
