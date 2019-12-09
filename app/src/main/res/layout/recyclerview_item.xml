@@ -5,12 +5,12 @@
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:background="@color/secondary"
-              android:divider="@color/colorPrimary" android:layout_weight="1">
+              android:divider="@color/colorPrimary">
 
-    <ImageView
+    <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
-            android:layout_height="276dp" tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:id="@+id/imageView" android:scaleType="fitStart"/>
+            android:layout_height="258dp"
+            android:id="@+id/PagerView"/>
     <TextView
             android:id="@+id/Title"
             style="@style/word_title"
@@ -25,9 +25,9 @@
             android:background="@color/secondary"
             style="@style/word_title"
             android:layout_width="match_parent"
-            android:layout_height="26dp"
+            android:layout_height="51dp"
             android:text="XDD"
             android:ellipsize="end"
             android:maxLines="4"
-            android:textSize="18sp" android:textAlignment="viewStart"/>
+            android:textSize="18sp"/>
 </LinearLayout>  <!-- Ogarnąć czcionki -->

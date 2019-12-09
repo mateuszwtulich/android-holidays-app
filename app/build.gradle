@@ -40,9 +40,10 @@ dependencies {
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
-    implementation 'com.google.android.material:material:1.1.0-alpha07'
+    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'me.relex:circleindicator:1.2.2@aar'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
-// Lifecycle components
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.archLifecycleVersion"
     kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.archLifecycleVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.androidxArchVersion"
@@ -59,4 +60,5 @@ dependencies {
 // Testing
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
 }

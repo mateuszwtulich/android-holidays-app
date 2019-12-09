@@ -9,7 +9,7 @@ import com.example.programowanieaplikacjimultimedialnych.model.Post
 
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 3, exportSchema = false) //export Schema w normalnej apce inaczej
+@Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 1, exportSchema = false) //export Schema w normalnej apce inaczej
 abstract class HolidayRoomDatabase : RoomDatabase() {
 
     abstract fun holidayDao(): HolidayDao
@@ -31,7 +31,7 @@ abstract class HolidayRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     HolidayRoomDatabase::class.java,
                     "holiday_database"
-                ).fallbackToDestructiveMigration().build()
+                ).build()
                 INSTANCE = instance
                 return instance
             }

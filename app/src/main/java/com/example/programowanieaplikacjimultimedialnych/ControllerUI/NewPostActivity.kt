@@ -20,14 +20,13 @@ class NewPostActivity : AppCompatActivity() {
 
     private lateinit var editTitleView: EditText
     private lateinit var editTextView: EditText
-    private var imagePath: Uri? = null
+    private var imagePath: ArrayList<String> = ArrayList()
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_word)
         editTitleView = findViewById(R.id.editTitle)
         editTextView = findViewById(R.id.editText)
-
-        val button = findViewById<Button>(R.id.button_save)
 
         button_save.setOnClickListener {
             val replyIntent = Intent()
@@ -40,7 +39,7 @@ class NewPostActivity : AppCompatActivity() {
 
                 replyIntent.putExtra("title", title)
                 replyIntent.putExtra("text", text)
-                replyIntent.putExtra("image",imagePath.toString())
+                replyIntent.putStringArrayListExtra("image",imagePath)
                 setResult(Activity.RESULT_OK, replyIntent)
             }
             finish()
@@ -52,14 +51,12 @@ class NewPostActivity : AppCompatActivity() {
                 PackageManager.PERMISSION_DENIED
             ) {
                 //permission denied
-                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+                val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 //show popup to request runtime permission
-                requestPermissions(permissions,
-                    PERMISSION_CODE
-                );
+                requestPermissions(permissions, PERMISSION_CODE)
             } else {
                 //permission already granted
-                pickImageFromGallery();
+                pickImageFromGallery()
             }
         }
     }
@@ -68,16 +65,15 @@ class NewPostActivity : AppCompatActivity() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent,
-            IMAGE_PICK_CODE
-        )
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(intent,IMAGE_PICK_CODE)
     }
 
     companion object {
         //image pick code
-        private val IMAGE_PICK_CODE = 1000;
+        private val IMAGE_PICK_CODE = 1000
         //Permission code
-        private val PERMISSION_CODE = 1001;
+        private val PERMISSION_CODE = 1001
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -99,7 +95,13 @@ class NewPostActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            imagePath = data?.data
+            val count = data?.clipData?.itemCount
+            if(count != null){
+                for (i in 0..(count - 1) ){
+                    imagePath.add(data.clipData?.getItemAt(i)?.uri.toString())
+                }
+            }
+
         }
     }
 }

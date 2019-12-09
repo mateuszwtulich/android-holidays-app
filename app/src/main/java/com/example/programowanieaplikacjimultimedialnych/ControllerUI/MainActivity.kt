@@ -50,16 +50,19 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == newPostActivityRequestCode && resultCode == Activity.RESULT_OK) {
                 val title = data?.getStringExtra("title")
                 val text = data?.getStringExtra("text")
-                val uri = data?.getStringExtra("image")
+                val uri  = data?.getStringArrayListExtra("image")
+                val listUri = mutableListOf<Uri>()
 
                 if(title != null && text != null && uri != null){
+                    uri.forEach {str -> listUri.add(Uri.parse(str.toString()))}
+
                     val noNullTitle = title
                     val noNullText = text
                     val post = PostDtoInput(
                         id = 0,
                         title = noNullTitle,
                         text = noNullText,
-                        uriList = listOf(Uri.parse(uri))
+                        uriList = listUri
                     )
                     holidayViewModel.insert(post)
                 }
