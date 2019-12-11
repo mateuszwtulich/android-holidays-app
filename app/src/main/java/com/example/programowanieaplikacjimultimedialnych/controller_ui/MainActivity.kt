@@ -3,6 +3,7 @@ package com.example.programowanieaplikacjimultimedialnych.controller_ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -14,31 +15,54 @@ import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mancj.materialsearchbar.MaterialSearchBar
+import android.text.Editable
+import android.widget.Filter
+import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListener {
     private val newPostActivityRequestCode = 1
     private lateinit var holidayViewModel: HolidayViewModel
+    private lateinit var searchText :CharSequence
+
+    //bool eanbled może podczas filtorwania
+
+    private  lateinit var adapter : HolidayListAdapter
+    private lateinit var filter : Filter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
-        val adapter = HolidayListAdapter(this)
+
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         val homeButton = findViewById<ExtendedFloatingActionButton>(R.id.homeButton)
+        val searchBar = findViewById<MaterialSearchBar>(R.id.searchBar)
+
+        adapter = HolidayListAdapter(this)
+        filter = adapter.filter
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
-
         holidayViewModel.allPosts.observe(this, Observer { posts ->
             // Update the cached copy of the words in the adapter.
             posts?.let {adapter.setPosts(it)
                         adapter.notifyDataSetChanged()}
+        })
+
+        searchBar.setOnSearchActionListener(this)
+        searchBar.addTextChangeListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                searchText = charSequence
+                filter.filter(charSequence)
+            }
+            override fun afterTextChanged(editable: Editable) {}
         })
 
         fab.setOnClickListener {
@@ -61,13 +85,11 @@ class MainActivity : AppCompatActivity() {
                 val uri  = data?.getStringArrayListExtra("image")
 
                 if(title != null && text != null && uri != null){
-
                     val post = PostDtoInput(
                         id = 0,
                         title = title,
                         text = text,
-                        uriList = uri
-                    )
+                        uriList = uri)
 
                     holidayViewModel.insert(post)
                 }
@@ -78,4 +100,21 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG).show()
         }
     }
+
+
+    override fun onSearchStateChanged(enabled: Boolean) {}
+
+    override fun onSearchConfirmed(text: CharSequence?) {
+        searchBar.disableSearch()
+    }
+
+    override fun onButtonClicked(buttonCode: Int) {
+        when (buttonCode) {
+            //MaterialSearchBar.BUTTON_NAVIGATION -> 0
+            //MaterialSearchBar.BUTTON_SPEECH -> 0
+            MaterialSearchBar.BUTTON_BACK -> searchBar.disableSearch()
+        }
+    }
+
+
 }
