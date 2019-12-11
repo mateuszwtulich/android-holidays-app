@@ -1,10 +1,9 @@
-package com.example.programowanieaplikacjimultimedialnych.database
+package com.example.programowanieaplikacjimultimedialnych.room_database
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
-import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
-import com.example.programowanieaplikacjimultimedialnych.model.Post
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.MultimediaPath
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.Post
 
 
 @Dao

@@ -1,8 +1,7 @@
-package com.example.programowanieaplikacjimultimedialnych.ControllerUI
+package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.programowanieaplikacjimultimedialnych.ViewModel.DTO.PostDtoInput
+import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
 import com.example.programowanieaplikacjimultimedialnych.R
-import com.example.programowanieaplikacjimultimedialnych.database.HolidayViewModel
+import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,10 +23,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = HolidayListAdapter(this)
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        val homeButton = findViewById<ExtendedFloatingActionButton>(R.id.homeButton)
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -34,13 +37,17 @@ class MainActivity : AppCompatActivity() {
 
         holidayViewModel.allPosts.observe(this, Observer { posts ->
             // Update the cached copy of the words in the adapter.
-            posts?.let {adapter.setPosts(it)}
+            posts?.let {adapter.setPosts(it)
+                        adapter.notifyDataSetChanged()}
         })
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewPostActivity::class.java)
             startActivityForResult(intent, newPostActivityRequestCode)
+        }
+
+        homeButton.setOnClickListener {
+            recyclerView.layoutManager?.scrollToPosition(0)
         }
     }
 
@@ -51,19 +58,16 @@ class MainActivity : AppCompatActivity() {
                 val title = data?.getStringExtra("title")
                 val text = data?.getStringExtra("text")
                 val uri  = data?.getStringArrayListExtra("image")
-                val listUri = mutableListOf<Uri>()
 
                 if(title != null && text != null && uri != null){
-                    uri.forEach {str -> listUri.add(Uri.parse(str.toString()))}
 
-                    val noNullTitle = title
-                    val noNullText = text
                     val post = PostDtoInput(
                         id = 0,
-                        title = noNullTitle,
-                        text = noNullText,
-                        uriList = listUri
+                        title = title,
+                        text = text,
+                        uriList = uri
                     )
+
                     holidayViewModel.insert(post)
                 }
         } else {

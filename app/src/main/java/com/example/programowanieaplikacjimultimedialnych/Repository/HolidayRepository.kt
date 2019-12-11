@@ -1,8 +1,9 @@
-package com.example.programowanieaplikacjimultimedialnych.database
+package com.example.programowanieaplikacjimultimedialnych.repository
 
 import androidx.lifecycle.LiveData
-import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
-import com.example.programowanieaplikacjimultimedialnych.model.Post
+import com.example.programowanieaplikacjimultimedialnych.room_database.HolidayDao
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.MultimediaPath
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.Post
 
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO

@@ -1,4 +1,4 @@
-package com.example.programowanieaplikacjimultimedialnych.model
+package com.example.programowanieaplikacjimultimedialnych.room_database.model
 
 import androidx.room.*
 

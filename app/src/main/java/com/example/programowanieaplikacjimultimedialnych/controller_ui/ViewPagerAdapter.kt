@@ -1,4 +1,4 @@
-package com.example.programowanieaplikacjimultimedialnych.ControllerUI
+package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.content.Context
 import android.net.Uri

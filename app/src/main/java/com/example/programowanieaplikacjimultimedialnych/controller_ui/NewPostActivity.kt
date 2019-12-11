@@ -1,15 +1,13 @@
-package com.example.programowanieaplikacjimultimedialnych.ControllerUI
+package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.programowanieaplikacjimultimedialnych.R
@@ -71,15 +69,15 @@ class NewPostActivity : AppCompatActivity() {
 
     companion object {
         //image pick code
-        private val IMAGE_PICK_CODE = 1000
+        private const val IMAGE_PICK_CODE = 1000
         //Permission code
-        private val PERMISSION_CODE = 1001
+        private const val PERMISSION_CODE = 1001
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] ==
+                if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
                     //permission from popup granted
@@ -94,6 +92,7 @@ class NewPostActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        imagePath.clear()
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             val count = data?.clipData?.itemCount
             if(count != null){
@@ -101,7 +100,9 @@ class NewPostActivity : AppCompatActivity() {
                     imagePath.add(data.clipData?.getItemAt(i)?.uri.toString())
                 }
             }
-
+            if(count == null){
+                    imagePath.add(data?.data.toString())
+            }
         }
     }
 }

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
+              android:paddingBottom="10dp"
               android:background="@color/secondary"
-              android:divider="@color/colorPrimary">
+              android:divider="@color/colorPrimary" android:gravity="center">
 
     <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="258dp"
-            android:id="@+id/PagerView"/>
+            android:id="@+id/PagerView">
+    </androidx.viewpager.widget.ViewPager>
+
     <TextView
             android:id="@+id/Title"
             style="@style/word_title"
@@ -19,15 +21,42 @@
             android:text="@string/example_title"
             android:ellipsize="end"
             android:maxLines="1"
-            android:gravity="center" android:layout_height="match_parent"/>
+            android:gravity="center"
+            android:layout_height="match_parent"/>
     <TextView
             android:id="@+id/TextContnet"
             android:background="@color/secondary"
             style="@style/word_title"
             android:layout_width="match_parent"
-            android:layout_height="51dp"
+            android:layout_height="wrap_content"
             android:text="XDD"
             android:ellipsize="end"
             android:maxLines="4"
             android:textSize="18sp"/>
-</LinearLayout>  <!-- Ogarnąć czcionki -->
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:text="TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/localistaionText" android:layout_weight="1"
+                android:gravity="center"/>
+
+        <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+                android:id="@+id/indicator"
+                android:layout_width="wrap_content"
+                app:spi_dotColor="@color/white"
+                app:spi_dotSelectedColor="@color/secondaryDark"
+                android:layout_height="wrap_content" android:layout_gravity="center" android:layout_weight="0"/>
+        <TextView
+                android:text="TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/dateText"
+                android:layout_gravity="start" android:gravity="center" android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>

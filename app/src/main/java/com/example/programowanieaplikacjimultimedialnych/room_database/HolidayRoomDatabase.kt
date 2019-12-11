@@ -1,11 +1,11 @@
-package com.example.programowanieaplikacjimultimedialnych.database
+package com.example.programowanieaplikacjimultimedialnych.room_database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.programowanieaplikacjimultimedialnych.model.MultimediaPath
-import com.example.programowanieaplikacjimultimedialnych.model.Post
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.MultimediaPath
+import com.example.programowanieaplikacjimultimedialnych.room_database.model.Post
 
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
@@ -31,7 +31,7 @@ abstract class HolidayRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     HolidayRoomDatabase::class.java,
                     "holiday_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }
