@@ -43,9 +43,13 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
         holder.localItemView.text = current.location.toString() //to do na miejscowość i kraj
         val adapter = ViewPagerAdapter(context, current.uriList)
         holder.pagerView.adapter = adapter
-        if(current.uriList.count() > 1){
+
+        if(current.uriList.count() > 1){                    //visibility może inaczej ?
+            holder.indicator.visibility = View.VISIBLE
             holder.indicator.attachToPager(holder.pagerView)
         }
+        else
+            holder.indicator.visibility = View.INVISIBLE
     }
 
 

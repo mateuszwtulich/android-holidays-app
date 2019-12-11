@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         homeButton.setOnClickListener {
+            recyclerView.stopScroll()
             recyclerView.layoutManager?.scrollToPosition(0)
         }
     }

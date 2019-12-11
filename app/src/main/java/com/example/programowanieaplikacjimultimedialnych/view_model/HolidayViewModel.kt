@@ -43,7 +43,8 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
 
         return Transformations.map(repository.getPost(postId)) { input ->
             val uriList = mutableListOf<Uri>()
-            getMultimediaPaths(input.id).forEach {multimediaPath -> uriList.add(Uri.parse(multimediaPath.path))}
+            val list = getMultimediaPaths(input.id)
+            list.forEach {multimediaPath -> uriList.add(Uri.parse(multimediaPath.path))}
             PostDtoOutput(
                 input.id,
                 input.title,
@@ -70,7 +71,8 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun insert(postDto: PostDtoInput) = viewModelScope.launch {
+    //run blocking bo live data zaczyna pobierać dane a lsita jeszcze się nie wrzuciłą do bayz XDDDDD
+    fun insert(postDto: PostDtoInput) = runBlocking {
         val post = Post(
             0, postDto.title, postDto.text,
             postDto.date.format(formatter),
