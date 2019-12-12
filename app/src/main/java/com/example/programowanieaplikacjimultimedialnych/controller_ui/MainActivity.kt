@@ -18,18 +18,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mancj.materialsearchbar.MaterialSearchBar
 import android.text.Editable
 import android.widget.Filter
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListener {
     private val newPostActivityRequestCode = 1
     private lateinit var holidayViewModel: HolidayViewModel
-    private lateinit var searchText :CharSequence
-
-    //bool eanbled może podczas filtorwania
+    private lateinit var searchText : CharSequence
 
     private  lateinit var adapter : HolidayListAdapter
     private lateinit var filter : Filter
+    private lateinit var searchBar : MaterialSearchBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +37,8 @@ class MainActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListen
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         val homeButton = findViewById<ExtendedFloatingActionButton>(R.id.homeButton)
-        val searchBar = findViewById<MaterialSearchBar>(R.id.searchBar)
 
+        searchBar =  findViewById(R.id.searchBar)
         adapter = HolidayListAdapter(this)
         filter = adapter.filter
 
@@ -55,12 +53,17 @@ class MainActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListen
         })
 
         searchBar.setOnSearchActionListener(this)
+
         searchBar.addTextChangeListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+
+            }
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 searchText = charSequence
-                filter.filter(charSequence)
+                if(searchBar.isSearchEnabled)
+                    filter.filter(charSequence)
+
             }
             override fun afterTextChanged(editable: Editable) {}
         })
@@ -101,11 +104,11 @@ class MainActivity : AppCompatActivity(), MaterialSearchBar.OnSearchActionListen
         }
     }
 
-
     override fun onSearchStateChanged(enabled: Boolean) {}
 
     override fun onSearchConfirmed(text: CharSequence?) {
         searchBar.disableSearch()
+        searchBar.setPlaceHolder(searchText)
     }
 
     override fun onButtonClicked(buttonCode: Int) {
