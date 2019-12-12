@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.programowanieaplikacjimultimedialnych.room_database.dao.MultimediaPathDao
+import com.example.programowanieaplikacjimultimedialnych.room_database.dao.PostDao
 import com.example.programowanieaplikacjimultimedialnych.room_database.model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.room_database.model.Post
 
@@ -12,7 +14,8 @@ import com.example.programowanieaplikacjimultimedialnych.room_database.model.Pos
 @Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 2, exportSchema = false) //export Schema w normalnej apce inaczej
 abstract class HolidayRoomDatabase : RoomDatabase() {
 
-    abstract fun holidayDao(): HolidayDao
+    abstract fun postDao(): PostDao
+    abstract fun multimediaPathDao(): MultimediaPathDao
 
     companion object {
         // Singleton prevents multiple instances of database opening at the

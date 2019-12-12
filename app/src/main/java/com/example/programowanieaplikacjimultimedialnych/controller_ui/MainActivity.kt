@@ -14,6 +14,8 @@ import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,8 +70,7 @@ class MainActivity : AppCompatActivity() {
                         text = text,
                         uriList = uri
                     )
-
-                    holidayViewModel.insert(post)
+                    GlobalScope.launch {  holidayViewModel.insert(post)}
                 }
         } else {
             Toast.makeText(
