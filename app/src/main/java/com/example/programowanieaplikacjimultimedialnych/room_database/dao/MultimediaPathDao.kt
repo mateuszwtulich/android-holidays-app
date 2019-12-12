@@ -5,7 +5,6 @@ import com.example.programowanieaplikacjimultimedialnych.room_database.model.Mul
 
 @Dao
 interface MultimediaPathDao {
-
     @Query("Select * from multimediaPath_table where post_id = :postId")
     suspend fun getMultimediaPaths(postId: Int): List<MultimediaPath>
 

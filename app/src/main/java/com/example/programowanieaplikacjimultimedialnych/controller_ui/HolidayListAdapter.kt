@@ -7,17 +7,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
+import android.widget.Filter
+import android.widget.Filterable
+import com.example.programowanieaplikacjimultimedialnych.R
 
 
-class HolidayListAdapter internal constructor(private var context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>() {
+class HolidayListAdapter internal constructor(private var context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var posts = emptyList<PostDtoOutput>() // Cached copy of words
     private val formater = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    private var postsList = emptyList<PostDtoOutput>()
+    private var postListFiltered = emptyList<PostDtoOutput>()// Cached copy of words
 
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,7 +39,7 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
 
     //gdzie indziej pagerAdapter
     override fun onBindViewHolder(holder: HolidayViewHolder, position: Int) {
-        val current = posts[position]
+        val current = postListFiltered[position]
         holder.titleItemView.text = current.title
         holder.textItemView.text = current.text
         holder.dateItemView.text = current.date.format(formater)
@@ -52,11 +55,45 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
             holder.indicator.visibility = View.INVISIBLE
     }
 
-
     internal fun setPosts(posts: List<PostDtoOutput>) {
-        this.posts = posts
+        this.postsList = posts
+        this.postListFiltered = posts
+        notifyDataSetChanged()
     }
 
+    override fun getItemCount() = postListFiltered.size
 
-    override fun getItemCount() = posts.size
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(charSequence: CharSequence): FilterResults {
+                val charString = charSequence.toString()
+                if (charString.isEmpty()) {
+                    postListFiltered = postsList
+                }
+                else {
+                    val filteredList = mutableListOf<PostDtoOutput>()
+                    for (row in postsList) {
+                        if (row.text.toLowerCase().contains(charString.toLowerCase()) ||
+                            row.title.contains(charSequence)
+                        ) {
+                            filteredList.add(row)
+                        }
+                    }
+                    postListFiltered = filteredList
+                }
+
+                val filterResults = FilterResults()
+                filterResults.values = postListFiltered
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                postListFiltered = results?.values as ArrayList<PostDtoOutput>
+
+                // refresh the list with filtered data
+                notifyDataSetChanged()
+            }
+        }
+    }
 }
+
