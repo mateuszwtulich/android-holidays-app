@@ -16,7 +16,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" android:layout_marginTop="95dp">
+            app:layout_constraintVertical_bias="1.0" android:layout_marginTop="90dp">
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -57,6 +57,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="32dp" android:layout_marginTop="8dp"/>
+
     <ImageButton
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -70,18 +71,20 @@
 
     <com.mancj.materialsearchbar.MaterialSearchBar
             style="@style/MaterialSearchBarLight"
-            app:mt_speechMode="false"
-            app:mt_hint="Wyszukaj wspomnienia"
+            app:mt_speechMode="true"
+            app:mt_hint="Szukaj..."
             app:mt_navIconEnabled="true"
             app:mt_roundedSearchBarEnabled="true"
-            app:mt_maxSuggestionsCount="10"
-            android:layout_width="0dp"
-            android:layout_height="47dp"
+            app:mt_maxSuggestionsCount="0"
+            app:mt_placeholderColor="@color/searchBarBackIconTintColor"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:id="@+id/searchBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="56dp" android:layout_marginEnd="25dp" android:layout_marginStart="25dp"
-            app:layout_constraintHorizontal_bias="0.0"/>
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

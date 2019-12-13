@@ -74,8 +74,10 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
                     val filteredList = mutableListOf<PostDtoOutput>()
                     for (row in postsList) {
                         if (row.text.toLowerCase().contains(charString.toLowerCase()) ||
-                            row.title.contains(charSequence)
-                        ) {
+                            row.title.toLowerCase().contains(charSequence) ||
+                            row.date.toString().contains(charString.toLowerCase()) ||
+                            row.location.toString().contains(charString.toLowerCase()))
+                        {
                             filteredList.add(row)
                         }
                     }
