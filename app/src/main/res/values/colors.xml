@@ -4,11 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#3B95E0</color>
     <color name="buttonLabel">#d3d3d3</color>
-<<<<<<< Updated upstream
-=======
     <color name="primary">#ffffff</color>
     <color name="primaryDark">#E0D3AF</color>
     <color name="secondary">#3B95E0</color>
     <color name="secondaryDark">#7A91C8</color>
->>>>>>> Stashed changes
 </resources>

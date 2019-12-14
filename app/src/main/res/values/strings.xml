@@ -2,9 +2,6 @@
     <string name="app_name">Programowanie aplikacji multimedialnych</string>
     <string name="hint_word">Word...</string>
     <string name="button_save">Save</string>
-<<<<<<< Updated upstream
-    <string name="empty_not_saved">Word not saved because it is empty.</string>
-=======
     <string name="empty_not_saved">Post not saved because it is empty.</string>
     <string name="no_chars">Post not saved because it has empty title or description.</string>
     <string name="example_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -20,5 +17,4 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
->>>>>>> Stashed changes
 </resources>
