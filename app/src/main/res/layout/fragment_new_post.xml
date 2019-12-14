@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+    <android.widget.ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_camera_alt_24px"
+            android:id="@+id/addImage"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="32dp" android:layout_marginTop="110dp" android:visibility="visible"/>
+
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/images_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toTopOf="parent">
+    </androidx.viewpager.widget.ViewPager>
+
+    <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            app:spi_dotColor="@color/white"
+            app:spi_dotSelectedColor="@color/secondaryDark"
+            android:layout_height="11dp" android:layout_gravity="center" android:layout_weight="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/images_viewpager" app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintEnd_toStartOf="@+id/images_viewpager" android:layout_marginTop="140dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:id="@+id/text_input_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterMaxLength="25"
+            app:counterEnabled="true"
+            android:background="@color/white"
+            android:hint="Title"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="150dp"
+            tools:layout_editor_absoluteX="0dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="25"
+                android:background="@color/white"
+                android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:id="@+id/text_input_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/calendar_search"
+            android:hint="Date"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="230dp"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dateText"
+                android:layout_width="200dp"
+                android:maxLength="10"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:inputType="date"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:id="@+id/text_input_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/map_marker"
+            android:hint="Location"
+            app:errorEnabled="true" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="310dp"
+            app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="25"
+                android:background="@color/white"
+                android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:id="@+id/text_input_description"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="250"
+            android:hint="Description"
+            app:errorEnabled="true"
+            tools:layout_editor_absoluteX="0dp" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="390dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="10"
+                android:lines="3"
+                android:maxLength="250"
+                android:gravity="start"
+                android:background="@color/white"
+                android:inputType="textMultiLine"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/savePost"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_save"
+
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="514dp"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="29dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
