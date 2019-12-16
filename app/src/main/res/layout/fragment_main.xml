@@ -5,10 +5,11 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary">
+        android:background="@color/secondaryDark">
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
+            android:background="@color/buttonLabel"
             android:layout_width="match_parent"
             android:fitsSystemWindows="true"
             tools:listitem="@layout/recyclerview_item"
@@ -34,14 +35,13 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/homeButton"
-            android:backgroundTint="@color/secondary"
+            android:backgroundTint="@color/primary"
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
             android:layout_width="175dp"
             android:layout_height="38dp"
             android:text="Wakacje"
-            android:background="@color/secondary"
             android:contentDescription="@string/appbar_scrolling_view_behavior"
-            android:textColor="@color/primary"
+            android:textColor="@color/secondaryDark"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/imageButton"
             android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
@@ -70,18 +70,20 @@
 
     <com.mancj.materialsearchbar.MaterialSearchBar
             style="@style/MaterialSearchBarLight"
-            app:mt_speechMode="false"
-            app:mt_hint="Wyszukaj wspomnienia"
-            app:mt_navIconEnabled="true"
+            app:mt_speechMode="true"
+            app:mt_hint="Szukaj..."
+            app:mt_navIconEnabled="false"
             app:mt_roundedSearchBarEnabled="true"
-            app:mt_maxSuggestionsCount="10"
-            android:layout_width="0dp"
-            android:layout_height="47dp"
+            app:mt_maxSuggestionsCount="0"
+            app:mt_placeholderColor="@color/searchBarBackIconTintColor"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:id="@+id/searchBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="56dp" android:layout_marginEnd="25dp" android:layout_marginStart="25dp"
-            app:layout_constraintHorizontal_bias="0.0"/>
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
