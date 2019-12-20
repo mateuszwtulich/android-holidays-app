@@ -7,32 +7,34 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.EditText
+import android.view.WindowManager
 import android.widget.Toast
 import com.example.programowanieaplikacjimultimedialnych.R
-import kotlinx.android.synthetic.main.activity_new_word.*
+import com.google.android.material.textfield.TextInputLayout
+import kotlinx.android.synthetic.main.fragment_new_post.*
 
 
 class NewPostActivity : AppCompatActivity() {
 
-    private lateinit var editTitleView: EditText
-    private lateinit var editTextView: EditText
+    private lateinit var textInputTitle: TextInputLayout
+    private lateinit var textInputDescripton: TextInputLayout
+//    private lateinit var adapter: ImageListAdapter
     private var imagePath: ArrayList<String> = ArrayList()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_word)
-        editTitleView = findViewById(R.id.editTitle)
-        editTextView = findViewById(R.id.editText)
+        setContentView(R.layout.fragment_new_post)
+        textInputDescripton = findViewById(R.id.text_input_description)
+        textInputTitle = findViewById(R.id.text_input_title)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        button_save.setOnClickListener {
+        savePost.setOnClickListener {
             val replyIntent = Intent()
-            if (TextUtils.isEmpty(editTitleView.text) || TextUtils.isEmpty(editTextView.text)) {
+            if (TextUtils.isEmpty(textInputTitle.editText.toString()) || TextUtils.isEmpty(textInputDescripton.editText.toString())) {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
-
-                val title = editTitleView.text.toString()
-                val text = editTextView.text.toString()
+                val title = textInputTitle.editText.toString()
+                val text = textInputDescripton.editText.toString()
 
                 replyIntent.putExtra("title", title)
                 replyIntent.putExtra("text", text)

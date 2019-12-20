@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/secondaryDark">
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:background="@color/buttonLabel"
+            android:layout_width="match_parent"
+            android:fitsSystemWindows="true"
+            tools:listitem="@layout/recyclerview_item"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" android:layout_marginTop="95dp">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            app:borderWidth="0dp"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:paddingBottom="20dp"
+            android:src="@drawable/ic_add_black_24dp" android:background="@android:color/holo_green_dark"
+            app:fabSize="auto" tools:srcCompat="@tools:sample/backgrounds/scenic" app:backgroundTint="@color/primary"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/homeButton"
+            android:backgroundTint="@color/primary"
+            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+            android:layout_width="175dp"
+            android:layout_height="38dp"
+            android:text="Wakacje"
+            android:contentDescription="@string/appbar_scrolling_view_behavior"
+            android:textColor="@color/secondaryDark"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center_horizontal" android:layout_marginTop="8dp"
+            app:layout_constraintHorizontal_bias="0.501"/>
+
+    <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp" app:srcCompat="@drawable/ic_camera_alt_24px"
+            android:id="@+id/imageButton"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="32dp" android:layout_marginTop="8dp"/>
+    <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_more_vert_24px"
+            android:id="@+id/imageButton2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="8dp"/>
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarLight"
+            app:mt_speechMode="true"
+            app:mt_hint="Szukaj..."
+            app:mt_navIconEnabled="false"
+            app:mt_roundedSearchBarEnabled="true"
+            app:mt_maxSuggestionsCount="0"
+            app:mt_placeholderColor="@color/searchBarBackIconTintColor"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/searchBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

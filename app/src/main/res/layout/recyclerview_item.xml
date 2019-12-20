@@ -1,62 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:paddingBottom="10dp"
-              android:background="@color/secondary"
-              android:divider="@color/colorPrimary" android:gravity="center">
 
-    <androidx.viewpager.widget.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="258dp"
-            android:id="@+id/PagerView">
-    </androidx.viewpager.widget.ViewPager>
 
-    <TextView
-            android:id="@+id/Title"
-            style="@style/word_title"
-            android:layout_width="match_parent"
-            android:background="@color/secondary"
-            android:text="@string/example_title"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="center"
-            android:layout_height="match_parent"/>
-    <TextView
-            android:id="@+id/TextContnet"
-            android:background="@color/secondary"
-            style="@style/word_title"
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/Widget.MaterialComponents.CardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="3dp"
+        android:layout_marginLeft="@dimen/card_margin_horizontal"
+        android:layout_marginRight="@dimen/card_margin_horizontal"
+        android:minHeight="200dp" android:layout_weight="1">
+    <LinearLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="XDD"
-            android:ellipsize="end"
-            android:maxLines="4"
-            android:textSize="18sp"/>
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:background="@color/primary"
+            android:gravity="center">
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="258dp"
+                android:id="@+id/PagerView" android:layout_weight="1">
+        </androidx.viewpager.widget.ViewPager>
 
         <TextView
-                android:text="TextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:id="@+id/localistaionText" android:layout_weight="1"
-                android:gravity="center"/>
-
-        <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
-                android:id="@+id/indicator"
-                android:layout_width="wrap_content"
-                app:spi_dotColor="@color/white"
-                app:spi_dotSelectedColor="@color/secondaryDark"
-                android:layout_height="wrap_content" android:layout_gravity="center" android:layout_weight="0"/>
+                android:id="@+id/Title"
+                style="@style/word_title"
+                android:layout_width="match_parent"
+                android:background="@color/primary"
+                android:text="@string/example_title"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:gravity="center"
+                android:layout_height="match_parent" android:layout_weight="1"/>
         <TextView
-                android:text="TextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:id="@+id/dateText"
-                android:layout_gravity="start" android:gravity="center" android:layout_weight="1"/>
+                android:id="@+id/TextContnet"
+                android:background="@color/primary"
+                style="@style/word_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:textSize="18sp" android:layout_weight="1"/>
 
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:id="@+id/localistaionText" android:layout_weight="1"
+                    android:gravity="center" android:textAlignment="center"/>
+
+            <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="wrap_content"
+                    app:spi_dotColor="@color/secondary"
+                    app:spi_dotSelectedColor="@color/secondaryDark"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0"/>
+            <TextView
+                    android:text="TextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateText"
+                    android:layout_gravity="start"
+                    android:gravity="center"
+                    android:layout_weight="1" android:textAlignment="center"/>
+
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,3 +1,4 @@
+
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.content.Context
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
-
 
 class ViewPagerAdapter internal constructor(private val context: Context, private val imageUrls: List<Uri>) :
     PagerAdapter() {
