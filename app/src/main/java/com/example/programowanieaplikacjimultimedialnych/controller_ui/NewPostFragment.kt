@@ -78,7 +78,6 @@ class NewPostFragment : Fragment() {
 
             if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(view!!.text_input_date.editText!!.text.toString())) {
                 val title = view!!.text_input_title.editText!!.text.toString()
-                //val title = view!!.text_input_title.editText.toString()
                 val text = view!!.text_input_description.editText!!.text.toString()
                 val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
                 //TODO DaTeTimeParseException
