@@ -6,16 +6,17 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.*
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -24,24 +25,26 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 import java.lang.Exception
 import java.util.*
 
-class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearchActionListener {
+class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearchActionListener,
+    HolidayListAdapter.OnPostListner {
+
     private val REQUEST_CODE_SPEACH_INPUT = 100
     private var searchText: CharSequence = ""
     private lateinit var holidayViewModel: HolidayViewModel
     private lateinit var adapter: HolidayListAdapter
     private lateinit var filter: Filter
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
-        adapter = HolidayListAdapter(requireContext())
+        adapter = HolidayListAdapter(requireContext(), this)
         filter = adapter.filter
 
         view.recyclerview.adapter = adapter
         view.recyclerview.layoutManager = LinearLayoutManager(view.context)
+
 
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
         holidayViewModel.allPosts.observe(requireActivity(), Observer { posts ->
@@ -52,24 +55,23 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         })
 
         view.searchBar.setOnSearchActionListener(this)
+        view.searchBar.placeHolderView.ellipsize = TextUtils.TruncateAt.END
 
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
         view.searchBar.setCardViewElevation(0)
 
         view.searchBar.addTextChangeListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-
-            }
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if(searchBar.isSearchEnabled)
+                if (searchBar.isSearchEnabled)
                     searchText = charSequence
-
             }
 
             override fun afterTextChanged(editable: Editable) {
-                if(searchBar.isSearchEnabled)
+                if (searchBar.isSearchEnabled)
                     filter.filter(editable)
+                searchBar.setPlaceHolder(searchText.toString())
             }
         })
 
@@ -89,27 +91,24 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         fun newInstance() = MainFragment()
     }
 
-
-    private fun speach(){
+    private fun speach() {
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
 
-        try{
-            startActivityForResult(mIntent,REQUEST_CODE_SPEACH_INPUT)
-        }
-        catch (e : Exception){
-            Toast.makeText(context,e.message, Toast.LENGTH_LONG).show()
+        try {
+            startActivityForResult(mIntent, REQUEST_CODE_SPEACH_INPUT)
+        } catch (e: Exception) {
+            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
-        if(enabled){
+        if (enabled) {
             searchBar.text = searchText.toString()
             searchBar.searchEditText.setSelection(searchText.length)
         }
-        else
-            searchBar.setPlaceHolder(searchText.toString())
+
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
@@ -119,7 +118,6 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
     override fun onButtonClicked(buttonCode: Int) {
         when (buttonCode) {
-            //MaterialSearchBar.BUTTON_NAVIGATION -> 0
             MaterialSearchBar.BUTTON_SPEECH -> speach()
             MaterialSearchBar.BUTTON_BACK -> searchBar.disableSearch()
         }
@@ -130,11 +128,41 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         if (requestCode == REQUEST_CODE_SPEACH_INPUT && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                //zwraca kila możliwych odpowiedzi
                 val str = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).toArray()[0] as String
                 searchText = str
                 onSearchConfirmed(str)
             }
         }
     }
+
+    override fun onPostClick(position: Int) {
+        val post = holidayViewModel.allPosts.value?.reversed()?.get(position)
+
+        val fragment = PostFragment.newInstance()
+
+        fragment.arguments = Bundle()
+        fragment.arguments?.putParcelable("post",post)
+
+        fragment.sharedElementEnterTransition = DetailsTransition()
+        fragment.sharedElementReturnTransition = DetailsTransition()
+        fragment.enterTransition = Fade()
+        exitTransition = Fade()
+
+        activity!!.supportFragmentManager
+            .beginTransaction()
+            .addSharedElement(recyclerview.findViewHolderForAdapterPosition(position)?.itemView!!.findViewById(R.id.PagerView),"PagerView")
+            .replace(R.id.fragment_container,fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    inner class DetailsTransition: TransitionSet() {
+       init{
+           setOrdering(ORDERING_TOGETHER)
+           addTransition(ChangeBounds())
+               .addTransition(ChangeTransform())
+               .addTransition(ChangeImageTransform())
+       }
+    }
 }
+

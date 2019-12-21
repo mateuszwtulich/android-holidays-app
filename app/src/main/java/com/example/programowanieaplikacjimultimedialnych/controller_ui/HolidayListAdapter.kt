@@ -14,22 +14,26 @@ import android.widget.Filter
 import android.widget.Filterable
 import com.example.programowanieaplikacjimultimedialnych.R
 
-
-class HolidayListAdapter internal constructor(private var context: Context) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
+class HolidayListAdapter internal constructor(private var context: Context, private val onPostListner: OnPostListner) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val formater = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     private var postsList = emptyList<PostDtoOutput>()
-    private var postListFiltered = emptyList<PostDtoOutput>()// Cached copy of words
+    private var postListFiltered = emptyList<PostDtoOutput>()
 
+    interface OnPostListner{
+        fun onPostClick(position: Int)
+    }
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
         val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
         val pagerView: ViewPager = itemView.findViewById(R.id.PagerView)
         val dateItemView : TextView = itemView.findViewById(R.id.dateText)
         val localItemView : TextView = itemView.findViewById(R.id.localistaionText)
         var indicator : ScrollingPagerIndicator = itemView.findViewById(R.id.indicator)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolidayViewHolder {
@@ -37,46 +41,51 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
         return HolidayViewHolder(itemView)
     }
 
-    //gdzie indziej pagerAdapter
     override fun onBindViewHolder(holder: HolidayViewHolder, position: Int) {
         val current = postListFiltered[position]
         holder.titleItemView.text = current.title
         holder.textItemView.text = current.text
         holder.dateItemView.text = current.date.format(formater)
-        holder.localItemView.text = current.location.toString() //to do na miejscowość i kraj
-        val adapter = ViewPagerAdapter(context, current.uriList)
+        holder.localItemView.text = current.location.toString()
+        val adapter = ViewPagerAdapter(context, current.uriList,onPostListner,position)
         holder.pagerView.adapter = adapter
 
-        if(current.uriList.count() > 1){                    //visibility może inaczej ?
-            holder.indicator.visibility = View.VISIBLE
-            holder.indicator.attachToPager(holder.pagerView)
+        holder.itemView.setOnClickListener {
+            onPostListner.onPostClick(position)
         }
+
+        if(current.uriList.count() > 1)
+            holder.indicator.visibility = View.VISIBLE
         else
             holder.indicator.visibility = View.INVISIBLE
+
+        holder.indicator.attachToPager(holder.pagerView)
+
     }
 
     internal fun setPosts(posts: List<PostDtoOutput>) {
-        this.postsList = posts
-        this.postListFiltered = posts
+        this.postsList = posts.reversed()
+        this.postListFiltered = posts.reversed()
         notifyDataSetChanged()
     }
 
     override fun getItemCount() = postListFiltered.size
 
+    //to lower case ???
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
-                val charString = charSequence.toString()
+                val charString = charSequence.toString().toLowerCase()
                 if (charString.isEmpty()) {
                     postListFiltered = postsList
                 }
                 else {
                     val filteredList = mutableListOf<PostDtoOutput>()
                     for (row in postsList) {
-                        if (row.text.toLowerCase().contains(charString.toLowerCase()) ||
-                            row.title.toLowerCase().contains(charSequence) ||
-                            row.date.toString().contains(charString.toLowerCase()) ||
-                            row.location.toString().contains(charString.toLowerCase()))
+                        if (row.text.toLowerCase().contains(charString) ||
+                            row.title.toLowerCase().contains(charString) ||
+                            row.date.toString().contains(charString) ||
+                            row.location.toString().contains(charString))
                         {
                             filteredList.add(row)
                         }
@@ -91,11 +100,10 @@ class HolidayListAdapter internal constructor(private var context: Context) : Re
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 postListFiltered = results?.values as ArrayList<PostDtoOutput>
-
-                // refresh the list with filtered data
                 notifyDataSetChanged()
             }
         }
     }
+
 }
 

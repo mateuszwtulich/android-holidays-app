@@ -29,7 +29,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class NewPostFragment : Fragment() {
+class NewPostFragment : Fragment(){
+
+
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     private var imagesPaths: ArrayList<String> = ArrayList()
     private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -148,7 +150,7 @@ class NewPostFragment : Fragment() {
                 imagesPaths.add(data?.data.toString())
             }
         }
-        val adapter = ViewPagerAdapter(requireContext(), imagesPaths.map { path -> Uri.parse(path)})
+        val adapter = ViewPagerAdapter(requireContext(), imagesPaths.map { path -> Uri.parse(path)},null,1)
         view!!.images_viewpager.adapter = adapter
 
         if(imagesPaths.count() > 1){                    //visibility może inaczej ?

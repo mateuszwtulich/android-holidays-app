@@ -11,6 +11,7 @@
         android:layout_marginLeft="@dimen/card_margin_horizontal"
         android:layout_marginRight="@dimen/card_margin_horizontal"
         android:minHeight="200dp" android:layout_weight="1">
+
     <LinearLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -23,6 +24,7 @@
         <androidx.viewpager.widget.ViewPager
                 android:layout_width="match_parent"
                 android:layout_height="258dp"
+                android:transitionName="example"
                 android:id="@+id/PagerView" android:layout_weight="1">
         </androidx.viewpager.widget.ViewPager>
 
