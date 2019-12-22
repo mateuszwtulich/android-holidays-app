@@ -29,7 +29,6 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
     }
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val layout: LinearLayout  =itemView.findViewById(R.id.layout)
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
         val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
         val pagerView: ViewPager = itemView.findViewById(R.id.PagerView)
@@ -109,6 +108,10 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
                 notifyDataSetChanged()
             }
         }
+    }
+
+    fun getFilterdPost(position: Int):PostDtoOutput{
+        return postListFiltered[position]
     }
 }
 

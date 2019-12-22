@@ -62,6 +62,9 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
         view.searchBar.setCardViewElevation(0)
 
+        if(searchText != "")
+            filter.filter(searchText)
+
         view.searchBar.addTextChangeListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
@@ -138,9 +141,11 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
     }
 
     override fun onPostClick(position: Int , image: Int) {
-        val post = holidayViewModel.allPosts.value?.reversed()?.get(position)
+        val post = adapter.getFilterdPost(position)
 
         val fragment = PostFragment.newInstance()
+
+        searchBar.disableSearch()
 
         fragment.arguments = Bundle()
         fragment.arguments?.putParcelable("post",post)
@@ -163,10 +168,10 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
     inner class DetailsTransition: TransitionSet() {
        init{
-           setOrdering(ORDERING_TOGETHER)
+           ordering = ORDERING_TOGETHER
+           addTransition(ChangeTransform())
+           addTransition(ChangeImageTransform())
            addTransition(ChangeBounds())
-               .addTransition(ChangeTransform())
-               .addTransition(ChangeImageTransform())
        }
     }
 }

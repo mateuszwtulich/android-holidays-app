@@ -12,8 +12,11 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        replaceFragment(MainFragment.newInstance())
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, MainFragment.newInstance())
+            .commit()
     }
 
     fun replaceFragment(fragment: Fragment){
