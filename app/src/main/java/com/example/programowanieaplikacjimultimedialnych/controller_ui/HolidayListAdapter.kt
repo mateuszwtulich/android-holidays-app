@@ -1,18 +1,21 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.content.Context
+import android.text.Layout
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
-import android.widget.Filter
-import android.widget.Filterable
 import com.example.programowanieaplikacjimultimedialnych.R
+import kotlinx.android.synthetic.main.fragment_new_post.view.*
+
+
 
 class HolidayListAdapter internal constructor(private var context: Context, private val onPostListner: OnPostListner) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
@@ -22,18 +25,17 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
     private var postListFiltered = emptyList<PostDtoOutput>()
 
     interface OnPostListner{
-        fun onPostClick(position: Int)
+        fun onPostClick(position: Int, image:Int)
     }
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val layout: LinearLayout  =itemView.findViewById(R.id.layout)
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
         val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
         val pagerView: ViewPager = itemView.findViewById(R.id.PagerView)
         val dateItemView : TextView = itemView.findViewById(R.id.dateText)
         val localItemView : TextView = itemView.findViewById(R.id.localistaionText)
-        var indicator : ScrollingPagerIndicator = itemView.findViewById(R.id.indicator)
-
+        val indicator : ScrollingPagerIndicator = itemView.findViewById(R.id.indicator)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolidayViewHolder {
@@ -51,8 +53,13 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
         holder.pagerView.adapter = adapter
 
         holder.itemView.setOnClickListener {
-            onPostListner.onPostClick(position)
+            onPostListner.onPostClick(position,holder.pagerView.currentItem)
+            Log.d("List postion:" , position.toString())
+            Log.d("Image tag:" , "image${holder.pagerView.currentItem}")
         }
+
+
+
 
         if(current.uriList.count() > 1)
             holder.indicator.visibility = View.VISIBLE
@@ -71,7 +78,6 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
 
     override fun getItemCount() = postListFiltered.size
 
-    //to lower case ???
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
@@ -104,6 +110,5 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
             }
         }
     }
-
 }
 

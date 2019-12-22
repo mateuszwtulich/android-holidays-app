@@ -10,9 +10,8 @@ import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Picasso
 
-class ViewPagerAdapter internal constructor(private val context: Context, private val imageUrls: List<Uri>,private val onPostListner: HolidayListAdapter.OnPostListner?,private val position1: Int) :
+class ViewPagerAdapter internal constructor(private val context: Context, private val imageUrls: List<Uri>,private val onPostListner: HolidayListAdapter.OnPostListner?,private val position_post: Int) :
     PagerAdapter(){
-
 
     override fun getCount(): Int {
         return imageUrls.size
@@ -25,6 +24,10 @@ class ViewPagerAdapter internal constructor(private val context: Context, privat
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val imageView = ImageView(context)
 
+
+        imageView.transitionName = "trans_($position_post,$position)"
+        imageView.tag = "image$position"
+
         Picasso.get()
             .load(imageUrls[position])
             .fit()
@@ -33,7 +36,9 @@ class ViewPagerAdapter internal constructor(private val context: Context, privat
         container.addView(imageView)
 
         imageView.setOnClickListener {
-            onPostListner?.onPostClick(position1)
+            Log.d("Image tag:" , imageView.tag.toString())
+            Log.d("List postion:" , position_post.toString())
+            onPostListner?.onPostClick(position_post,position)
         }
 
         return imageView
@@ -42,4 +47,5 @@ class ViewPagerAdapter internal constructor(private val context: Context, privat
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
     }
+
 }

@@ -12,11 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.*
+import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -135,22 +137,25 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         }
     }
 
-    override fun onPostClick(position: Int) {
+    override fun onPostClick(position: Int , image: Int) {
         val post = holidayViewModel.allPosts.value?.reversed()?.get(position)
 
         val fragment = PostFragment.newInstance()
 
         fragment.arguments = Bundle()
         fragment.arguments?.putParcelable("post",post)
+        fragment.arguments?.putIntArray("positions", intArrayOf(position,image))
 
         fragment.sharedElementEnterTransition = DetailsTransition()
         fragment.sharedElementReturnTransition = DetailsTransition()
         fragment.enterTransition = Fade()
         exitTransition = Fade()
 
+        val view = recyclerview.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
+
         activity!!.supportFragmentManager
             .beginTransaction()
-            .addSharedElement(recyclerview.findViewHolderForAdapterPosition(position)?.itemView!!.findViewById(R.id.PagerView),"PagerView")
+            .addSharedElement(view, "trans_($position,$image)")
             .replace(R.id.fragment_container,fragment)
             .addToBackStack(null)
             .commit()

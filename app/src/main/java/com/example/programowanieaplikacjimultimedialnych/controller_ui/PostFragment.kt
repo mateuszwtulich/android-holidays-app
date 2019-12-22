@@ -24,6 +24,8 @@ class PostFragment: Fragment(){
 
         if (arguments != null){
             val postDtoOutput = arguments?.getParcelable<PostDtoOutput>("post")
+            val array = arguments?.getIntArray("positions")
+
             val title : TextView = view.findViewById(R.id.Title)
             val text : TextView = view.findViewById(R.id.TextContnet)
             val localisation : TextView = view.findViewById(R.id.localistaionText)
@@ -36,15 +38,15 @@ class PostFragment: Fragment(){
             localisation.text = postDtoOutput?.location.toString()
             date.text = postDtoOutput?.date?.format(formater)
 
-            val adapter = ViewPagerAdapter(context!!, postDtoOutput!!.uriList ,null,1)
+            val adapter = ViewPagerAdapter(context!!, postDtoOutput!!.uriList ,null, array!![0])
             pagerView.adapter = adapter
 
             if(postDtoOutput.uriList.count() > 1)
                 indicator.visibility = View.VISIBLE
             else
                 indicator.visibility = View.INVISIBLE
-
             indicator.attachToPager(pagerView)
+            pagerView.currentItem = array[1]
         }
 
         return view
