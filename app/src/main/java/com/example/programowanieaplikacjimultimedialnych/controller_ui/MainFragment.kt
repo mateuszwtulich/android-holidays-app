@@ -8,6 +8,7 @@ import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,17 +37,29 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
     private lateinit var adapter: HolidayListAdapter
     private lateinit var filter: Filter
 
+    private var currentPost: Int = 0
+    private var currentImage: Int = 0
+
+    interface MainFragmentListner{
+        fun updateMF()
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main, container, false)
+
         adapter = HolidayListAdapter(requireContext(), this)
+        adapter.setHasStableIds(true)
+
         filter = adapter.filter
 
         view.recyclerview.adapter = adapter
         view.recyclerview.layoutManager = LinearLayoutManager(view.context)
-
+        view.recyclerview.setHasFixedSize(true)
+        view.recyclerview.setItemViewCacheSize(15)
 
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
         holidayViewModel.allPosts.observe(requireActivity(), Observer { posts ->
@@ -58,42 +71,37 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         view.searchBar.setOnSearchActionListener(this)
         view.searchBar.placeHolderView.ellipsize = TextUtils.TruncateAt.END
-
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
         view.searchBar.setCardViewElevation(0)
 
-        if(searchText != "")
+        if (searchText != "")
             filter.filter(searchText)
 
         view.searchBar.addTextChangeListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (searchBar.isSearchEnabled)
+                if (view.searchBar.isSearchEnabled)
                     searchText = charSequence
             }
 
             override fun afterTextChanged(editable: Editable) {
-                if (searchBar.isSearchEnabled)
+                if (view.searchBar.isSearchEnabled)
                     filter.filter(editable)
-                searchBar.setPlaceHolder(searchText.toString())
+                view.searchBar.setPlaceHolder(searchText.toString())
             }
         })
 
         view.fab.setOnClickListener {
-            (activity as MainActivity).replaceFragment(NewPostFragment.newInstance())
+            (activity as MainActivity).addFragment(NewPostFragment.newInstance())
         }
 
         view.homeButton.setOnClickListener {
             view.recyclerview.stopScroll()
             view.recyclerview.layoutManager?.scrollToPosition(0)
         }
-        return view
-    }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = MainFragment()
+        return view
     }
 
     private fun speach() {
@@ -113,7 +121,6 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
             searchBar.text = searchText.toString()
             searchBar.searchEditText.setSelection(searchText.length)
         }
-
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
@@ -133,46 +140,63 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         if (requestCode == REQUEST_CODE_SPEACH_INPUT && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                val str = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).toArray()[0] as String
+                val str = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).toArray()!![0] as String
                 searchText = str
                 onSearchConfirmed(str)
             }
         }
     }
 
-    override fun onPostClick(position: Int , image: Int) {
+    override fun onPostClick(position: Int, image: Int) {
+        postponeEnterTransition()
+
         val post = adapter.getFilterdPost(position)
-
         val fragment = PostFragment.newInstance()
-
         searchBar.disableSearch()
 
+        //Dane
         fragment.arguments = Bundle()
-        fragment.arguments?.putParcelable("post",post)
-        fragment.arguments?.putIntArray("positions", intArrayOf(position,image))
+        fragment.arguments?.putParcelable("post", post)
+        fragment.arguments?.putIntArray("positions", intArrayOf(position, image))
 
+        //Animacja
         fragment.sharedElementEnterTransition = DetailsTransition()
         fragment.sharedElementReturnTransition = DetailsTransition()
         fragment.enterTransition = Fade()
         exitTransition = Fade()
 
-        val view = recyclerview.findViewHolderForAdapterPosition(position)?.itemView?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
+        //Wspódzielony element
+        val view = recyclerview.findViewHolderForAdapterPosition(position)?.itemView
+            ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
-        activity!!.supportFragmentManager
-            .beginTransaction()
-            .addSharedElement(view, "trans_($position,$image)")
-            .replace(R.id.fragment_container,fragment)
-            .addToBackStack(null)
-            .commit()
+        //Start Fragmentu z animacją
+        (activity as MainActivity).addFragmentWithAnimation(fragment, view, "trans_($position,$image)")
     }
 
-    inner class DetailsTransition: TransitionSet() {
-       init{
-           ordering = ORDERING_TOGETHER
-           addTransition(ChangeTransform())
-           addTransition(ChangeImageTransform())
-           addTransition(ChangeBounds())
-       }
+    //Klasa animacji
+    inner class DetailsTransition : TransitionSet() {
+        init {
+            ordering = ORDERING_TOGETHER
+            addTransition(ChangeTransform())
+            addTransition(ChangeImageTransform())
+            addTransition(ChangeBounds())
+        }
     }
+
+    fun updateData(bundle: Bundle){
+        Log.d("Main Fragment:" ,bundle.toString())
+        currentPost = bundle.getIntArray("position")!![0]
+        currentImage = bundle.getIntArray("position")!![1]
+
+        view?.recyclerview?.findViewHolderForAdapterPosition(currentPost)
+            ?.itemView?.findViewById<ViewPager>(R.id.PagerView)?.setCurrentItem(currentImage,false)
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MainFragment()
+    }
+
 }
 

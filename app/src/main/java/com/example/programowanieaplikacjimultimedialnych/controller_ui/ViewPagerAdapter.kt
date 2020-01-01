@@ -24,7 +24,6 @@ class ViewPagerAdapter internal constructor(private val context: Context, privat
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val imageView = ImageView(context)
 
-
         imageView.transitionName = "trans_($position_post,$position)"
         imageView.tag = "image$position"
 

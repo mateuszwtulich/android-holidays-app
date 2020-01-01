@@ -95,7 +95,6 @@ class NewPostFragment : Fragment(){
                     )
 
                     GlobalScope.launch { holidayViewModel.insert(post) }
-                    (activity as MainActivity).replaceFragment(MainFragment.newInstance())
                 }
             } else {
                 Toast.makeText(

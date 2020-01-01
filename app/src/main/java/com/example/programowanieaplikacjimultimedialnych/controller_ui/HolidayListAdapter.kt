@@ -43,22 +43,23 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
     }
 
     override fun onBindViewHolder(holder: HolidayViewHolder, position: Int) {
+
         val current = postListFiltered[position]
+        val adapter = ViewPagerAdapter(context, current.uriList,onPostListner,position)
+
         holder.titleItemView.text = current.title
         holder.textItemView.text = current.text
         holder.dateItemView.text = current.date.format(formater)
         holder.localItemView.text = current.location.toString()
-        val adapter = ViewPagerAdapter(context, current.uriList,onPostListner,position)
         holder.pagerView.adapter = adapter
+        holder.pagerView.offscreenPageLimit = 6
+
 
         holder.itemView.setOnClickListener {
             onPostListner.onPostClick(position,holder.pagerView.currentItem)
             Log.d("List postion:" , position.toString())
             Log.d("Image tag:" , "image${holder.pagerView.currentItem}")
         }
-
-
-
 
         if(current.uriList.count() > 1)
             holder.indicator.visibility = View.VISIBLE
@@ -112,6 +113,10 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
 
     fun getFilterdPost(position: Int):PostDtoOutput{
         return postListFiltered[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return postListFiltered[position].id.hashCode().toLong()
     }
 }
 

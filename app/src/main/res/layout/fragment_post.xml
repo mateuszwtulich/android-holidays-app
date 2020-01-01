@@ -4,14 +4,17 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="match_parent">
 
     <androidx.viewpager.widget.ViewPager
             android:layout_width="match_parent"
             android:layout_height="258dp"
-            android:id="@+id/PagerView" android:layout_weight="1"
+            android:id="@+id/PagerView"
+            android:layout_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0">
     </androidx.viewpager.widget.ViewPager>
 
