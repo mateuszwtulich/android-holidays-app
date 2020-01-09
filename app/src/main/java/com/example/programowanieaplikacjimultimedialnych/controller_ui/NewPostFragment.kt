@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
+import kotlinx.android.synthetic.main.fragment_main.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.android.synthetic.main.fragment_new_post.view.*
 import kotlinx.android.synthetic.main.fragment_new_post.view.dateText
@@ -48,16 +49,20 @@ class NewPostFragment : Fragment() {
             addMultimedia()
         }
 
+        view.images_viewpager.setOnClickListener {
+            addMultimedia()
+        }
+
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        view.text_input_date.setEndIconOnClickListener {
+        view.text_input_date.setStartIconOnClickListener {
             addDate(year, month, day)
         }
 
-        view.text_input_location.setEndIconOnClickListener {
+        view.text_input_location.setStartIconOnClickListener {
 
         }
         return view

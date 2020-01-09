@@ -1,18 +1,36 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorAccent">@color/primaryDarkColor</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="android:colorAccent">@color/primaryDarkColor</item>
     </style>
 
-    <style name="word_title">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:background">@android:color/holo_orange_light</item>
-        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@drawable/text_input</item>
+        <!--<item name="counterTextColor">@color/primaryDarkColor</item>-->
+        <item name="hintTextColor">@color/primaryDarkColor</item>
+        <item name='android:textCheckMark'>@color/primaryDarkColor</item>
+        <item name="placeholderTextColor">@color/secondaryDarkColor</item>
+        <item name="prefixTextColor">@color/primaryDarkColor</item>
+        <item name="suffixTextColor">@color/primaryDarkColor</item>
+        <item name="startIconTint">@color/primaryDarkColor</item>
+        <item name="colorControlActivated">@color/primaryDarkColor</item>
+        <item name="helperTextTextColor">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryDarkColor</item>
+        <item name="android:textColorHint">@color/mtrl_indicator_text_color</item>
+    </style>
+
+    <style name="TextInputEditTextStyle" parent = "Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+        <item name="android:colorControlActivated">@color/primaryDarkColor</item>
+        <item name="android:textColorHint">@color/primaryDarkColor</item>
+        <item name="android:colorAccent">@color/primaryDarkColor</item>
+    </style>
+
+    <style name="Widget.MyApp.MyButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primaryDarkColor</item>
     </style>
 </resources>

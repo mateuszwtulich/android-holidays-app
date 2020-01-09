@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="10dp"
-            android:background="@color/primary"
+            android:background="@color/white"
             android:gravity="center">
 
         <androidx.viewpager.widget.ViewPager
@@ -28,9 +28,8 @@
 
         <TextView
                 android:id="@+id/Title"
-                style="@style/word_title"
                 android:layout_width="match_parent"
-                android:background="@color/primary"
+                android:background="@color/white"
                 android:text="@string/example_title"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -38,8 +37,7 @@
                 android:layout_height="match_parent" android:layout_weight="1"/>
         <TextView
                 android:id="@+id/TextContnet"
-                android:background="@color/primary"
-                style="@style/word_title"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -60,8 +58,8 @@
             <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
                     android:id="@+id/indicator"
                     android:layout_width="wrap_content"
-                    app:spi_dotColor="@color/secondary"
-                    app:spi_dotSelectedColor="@color/secondaryDark"
+                    app:spi_dotColor="@color/primaryColor"
+                    app:spi_dotSelectedColor="@color/primaryDarkColor"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="0"/>
