@@ -15,6 +15,6 @@
             android:id="@+id/indicator"
             android:layout_width="wrap_content"
             app:spi_dotColor="@color/white"
-            app:spi_dotSelectedColor="@color/secondaryDark"
+            app:spi_dotSelectedColor="@color/secondaryDarkColor"
             android:layout_height="wrap_content" android:layout_gravity="center" android:layout_weight="0"/>
 </LinearLayout>

@@ -36,8 +36,8 @@
         <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
                 android:id="@+id/indicator"
                 android:layout_width="wrap_content"
-                app:spi_dotColor="@color/secondary"
-                app:spi_dotSelectedColor="@color/secondaryDark"
+                app:spi_dotColor="@color/secondaryColor"
+                app:spi_dotSelectedColor="@color/secondaryDarkColor"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0"/>
@@ -55,9 +55,8 @@
 
     <TextView
             android:id="@+id/Title"
-            style="@style/word_title"
             android:layout_width="match_parent"
-            android:background="@color/primary"
+            android:background="@color/primaryColor"
             android:text="@string/example_title"
             android:ellipsize="end"
             android:maxLines="1"
@@ -69,8 +68,7 @@
 
     <TextView
             android:id="@+id/TextContnet"
-            android:background="@color/primary"
-            style="@style/word_title"
+            android:background="@color/primaryColor"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:textSize="18sp"

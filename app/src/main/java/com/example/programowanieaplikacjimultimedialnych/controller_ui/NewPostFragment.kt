@@ -18,19 +18,15 @@ import androidx.fragment.app.Fragment
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
-import kotlinx.coroutines.GlobalScope
+import kotlinx.android.synthetic.main.fragment_new_post.*
 import kotlinx.android.synthetic.main.fragment_new_post.view.*
-import kotlinx.android.synthetic.main.fragment_new_post.view.dateText
-import kotlinx.android.synthetic.main.fragment_new_post.view.indicator
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
-
-class NewPostFragment : Fragment(){
-
+class NewPostFragment : Fragment() {
 
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     private var imagesPaths: ArrayList<String> = ArrayList()
@@ -50,17 +46,21 @@ class NewPostFragment : Fragment(){
             addMultimedia()
         }
 
+        view.images_viewpager.setOnClickListener {
+            addMultimedia()
+        }
+
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        view.text_input_date.setEndIconOnClickListener {
+
+        view.text_input_date.setStartIconOnClickListener {
             addDate(year, month, day)
         }
 
-        view.text_input_location.setEndIconOnClickListener {
-
+        view.text_input_location.setStartIconOnClickListener {
         }
         return view
     }
@@ -80,6 +80,7 @@ class NewPostFragment : Fragment(){
 
             if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(view!!.text_input_date.editText!!.text.toString())) {
                 val title = view!!.text_input_title.editText!!.text.toString()
+
                 val text = view!!.text_input_description.editText!!.text.toString()
                 val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
                 //TODO DaTeTimeParseException
@@ -150,6 +151,7 @@ class NewPostFragment : Fragment(){
             }
         }
         val adapter = ViewPagerAdapter(requireContext(), imagesPaths.map { path -> Uri.parse(path)},null,1)
+
         view!!.images_viewpager.adapter = adapter
 
         if(imagesPaths.count() > 1){                    //visibility może inaczej ?

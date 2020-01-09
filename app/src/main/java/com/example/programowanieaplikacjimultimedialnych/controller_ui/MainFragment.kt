@@ -7,8 +7,8 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,8 +58,10 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         view.recyclerview.adapter = adapter
         view.recyclerview.layoutManager = LinearLayoutManager(view.context)
+
         view.recyclerview.setHasFixedSize(true)
         view.recyclerview.setItemViewCacheSize(15)
+
 
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
         holidayViewModel.allPosts.observe(requireActivity(), Observer { posts ->
@@ -89,6 +91,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
                 if (view.searchBar.isSearchEnabled)
                     filter.filter(editable)
                 view.searchBar.setPlaceHolder(searchText.toString())
+
             }
         })
 
@@ -100,27 +103,35 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
             view.recyclerview.stopScroll()
             view.recyclerview.layoutManager?.scrollToPosition(0)
         }
-
         return view
     }
 
-    private fun speach() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MainFragment()
+    }
+
+    private fun speach(){
+
         val mIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         mIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-
         try {
             startActivityForResult(mIntent, REQUEST_CODE_SPEACH_INPUT)
         } catch (e: Exception) {
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+
         }
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
-        if (enabled) {
+        if(enabled){
             searchBar.text = searchText.toString()
             searchBar.searchEditText.setSelection(searchText.length)
         }
+        else
+            searchBar.setPlaceHolder(searchText.toString())
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
@@ -190,12 +201,6 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         view?.recyclerview?.findViewHolderForAdapterPosition(currentPost)
             ?.itemView?.findViewById<ViewPager>(R.id.PagerView)?.setCurrentItem(currentImage,false)
-    }
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = MainFragment()
     }
 
 }
