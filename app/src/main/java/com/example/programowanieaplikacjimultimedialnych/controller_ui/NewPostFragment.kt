@@ -68,7 +68,7 @@ class NewPostFragment : Fragment() {
         return view
     }
 
-    fun savePost() {
+    private fun savePost() {
         var resultCode: Int
         if (TextUtils.isEmpty(view!!.text_input_title.editText.toString()) ||
             TextUtils.isEmpty(view!!.text_input_description.editText.toString())
@@ -97,8 +97,9 @@ class NewPostFragment : Fragment() {
                         date = localDate,
                         uriList = uri
                     )
-
                     GlobalScope.launch { holidayViewModel.insert(post) }
+                (activity as MainActivity).supportFragmentManager.popBackStackImmediate()
+
 
             } else {
                 Toast.makeText(

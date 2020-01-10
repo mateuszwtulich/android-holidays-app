@@ -34,6 +34,7 @@ import java.util.*
 class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     HolidayListAdapter.OnPostListner {
 
+
     private val REQUEST_CODE_SPEACH_INPUT = 100
     private var searchText: CharSequence = ""
     private lateinit var holidayViewModel: HolidayViewModel
@@ -47,6 +48,8 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        postponeEnterTransition()
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
         adapter = HolidayListAdapter(requireContext(), this)
@@ -94,13 +97,14 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         })
 
         view.fab.setOnClickListener {
-            (activity as MainActivity).addFragment(NewPostFragment.newInstance())
+            (activity as MainActivity).replaceFragment(NewPostFragment.newInstance())
         }
 
         view.homeButton.setOnClickListener {
             view.recyclerview.stopScroll()
             view.recyclerview.layoutManager?.scrollToPosition(0)
         }
+        startPostponedEnterTransition()
         return view
     }
 
@@ -157,7 +161,8 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onPostClick(position: Int, image: Int) {
-        postponeEnterTransition()
+
+
 
         val post = adapter.getFilterdPost(position)
         val fragment = PostFragment.newInstance()
@@ -179,6 +184,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
             ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
         //Start Fragmentu z animacją
+
         (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)")
 
     }

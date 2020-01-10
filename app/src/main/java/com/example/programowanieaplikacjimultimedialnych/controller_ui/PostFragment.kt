@@ -1,6 +1,8 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 
+import android.graphics.drawable.Drawable
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
+import javax.sql.DataSource
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+
+
+
 
 class PostFragment : Fragment() {
 
@@ -29,6 +36,7 @@ class PostFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        postponeEnterTransition()
         val view = inflater.inflate(R.layout.fragment_post, container, false)
 
         if (arguments != null) {
@@ -63,6 +71,7 @@ class PostFragment : Fragment() {
             indicator.attachToPager(pagerView)
             pagerView.setCurrentItem(imagePosition, false)
 
+            //!!!
             (activity as MainActivity).scheduleStartPostponedTransition(view.findViewById<ViewPager>(R.id.PagerView))
         }
         return view
@@ -78,6 +87,7 @@ class PostFragment : Fragment() {
 
         Log.d("PostFragment :", "Tab[${arr[0]},${arr[1]}]")
         (activity as MainActivity).updatePF(bundle)
+
     }
 
     companion object {

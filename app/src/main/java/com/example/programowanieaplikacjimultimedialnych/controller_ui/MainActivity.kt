@@ -8,7 +8,6 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.programowanieaplikacjimultimedialnych.R
 
 class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
 
@@ -25,12 +24,12 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        addFragment(fragment)
+        replaceFragment(MainFragment.newInstance())
     }
 
-    fun addFragment(fragment: Fragment) {
+    fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -40,7 +39,6 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
             .beginTransaction()
             .addSharedElement(view, sharedElementName)
         .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
-
         .addToBackStack(null)
             .commit()
     }
@@ -66,6 +64,7 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
 Animacja działa ale jak zrobić czekanie na załadowanie się viewPagerów przy przejściu
 Gdy działa animacja nie można ustawić pozycji viewpager podczas powrotu z posta
 Shared element
+OnPreDraw znajduje view pagera ale nie jego dzieci !!!
 
 */
 /*
