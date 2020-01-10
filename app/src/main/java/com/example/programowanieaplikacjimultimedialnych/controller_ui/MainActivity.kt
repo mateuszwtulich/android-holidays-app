@@ -1,3 +1,4 @@
+
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.os.Bundle
@@ -5,20 +6,17 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.programowanieaplikacjimultimedialnych.R
 
+class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
 
-class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFragment.PostFragmentListner{
+    private val fragment = MainFragment.newInstance()
 
-    private val fragment =  MainFragment.newInstance()
-
-    override fun updateMF() {}
 
     override fun updatePF(bundle: Bundle) {
-        Log.d("Main activity:" ,bundle.toString())
+        Log.d("Main activity:", bundle.toString())
         fragment.updateData(bundle)
     }
 
@@ -27,24 +25,23 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
+        addFragment(fragment)
+    }
+
+    fun addFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, fragment)
+            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
-    fun addFragment(fragment: Fragment){
-       supportFragmentManager.beginTransaction()
-           .add(R.id.fragment_container, fragment)
-           .addToBackStack(null)
-           .commit()
-    }
-
-    fun replaceFragmentWithAnimation(fragment: Fragment,view :View, sharedElementName: String){
+    fun replaceFragmentWithAnimation(fragment: Fragment, view: View, sharedElementName: String) {
         supportFragmentManager
             .beginTransaction()
             .addSharedElement(view, sharedElementName)
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
+        .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+
+        .addToBackStack(null)
             .commit()
     }
 
@@ -59,8 +56,12 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
         })
     }
 
-}
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) this.finish()
+        else supportFragmentManager.popBackStack()
+    }
 
+}
 /*
 Animacja działa ale jak zrobić czekanie na załadowanie się viewPagerów przy przejściu
 Gdy działa animacja nie można ustawić pozycji viewpager podczas powrotu z posta
@@ -74,3 +75,5 @@ Zrobienia zdjęcia i dodanie go do lub przeniesienie go do tworzenia nowego post
 
 Mati : Wywala błąd przy description jak da się za dużo znaków nowej lini
  */
+
+

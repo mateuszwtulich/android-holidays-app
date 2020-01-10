@@ -1,3 +1,4 @@
+
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.app.Activity
@@ -15,6 +16,8 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 import java.lang.Exception
 import java.util.*
 
-class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearchActionListener,
+class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     HolidayListAdapter.OnPostListner {
 
     private val REQUEST_CODE_SPEACH_INPUT = 100
@@ -39,11 +42,6 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
     private var currentPost: Int = 0
     private var currentImage: Int = 0
-
-    interface MainFragmentListner{
-        fun updateMF()
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -182,6 +180,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
         //Start Fragmentu z animacją
         (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)")
+
     }
 
     //Klasa animacji
@@ -204,4 +203,3 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
     }
 
 }
-

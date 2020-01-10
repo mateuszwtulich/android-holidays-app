@@ -30,10 +30,10 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
-        val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
+//        val textItemView: TextView = itemView.findViewById(R.id.TextContnet)
         val pagerView: ViewPager = itemView.findViewById(R.id.PagerView)
         val dateItemView : TextView = itemView.findViewById(R.id.dateText)
-        val localItemView : TextView = itemView.findViewById(R.id.localistaionText)
+//        val localItemView : TextView = itemView.findViewById(R.id.localistaionText)
         val indicator : ScrollingPagerIndicator = itemView.findViewById(R.id.indicator)
     }
 
@@ -48,9 +48,9 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
         val adapter = ViewPagerAdapter(context, current.uriList,onPostListner,position)
 
         holder.titleItemView.text = current.title
-        holder.textItemView.text = current.text
+//        holder.textItemView.text = current.text
         holder.dateItemView.text = current.date.format(formater)
-        holder.localItemView.text = current.location.toString()
+//        holder.localItemView.text = current.location.toString()
         holder.pagerView.adapter = adapter
         holder.pagerView.offscreenPageLimit = 6
 
