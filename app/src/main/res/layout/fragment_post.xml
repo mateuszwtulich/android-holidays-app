@@ -5,6 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
         android:layout_width="match_parent"
         android:background="@color/white"
+        android:clickable="true"
         android:layout_height="match_parent">
 
     <androidx.viewpager.widget.ViewPager
@@ -28,9 +29,10 @@
             app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-                android:text="TextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/localistaionText" android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/localistaionText"
+                android:layout_weight="1"
                 android:gravity="center" android:textAlignment="center"/>
 
         <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
@@ -42,7 +44,6 @@
                 android:layout_gravity="center"
                 android:layout_weight="0"/>
         <TextView
-                android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/dateText"
@@ -56,7 +57,7 @@
     <TextView
             android:id="@+id/Title"
             android:layout_width="match_parent"
-            android:background="@color/primaryColor"
+            android:background="@color/white"
             android:text="@string/example_title"
             android:ellipsize="end"
             android:maxLines="1"
@@ -68,7 +69,7 @@
 
     <TextView
             android:id="@+id/TextContnet"
-            android:background="@color/primaryColor"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:textSize="18sp"

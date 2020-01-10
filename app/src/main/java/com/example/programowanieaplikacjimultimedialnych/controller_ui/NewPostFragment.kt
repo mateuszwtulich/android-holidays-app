@@ -86,7 +86,6 @@ class NewPostFragment : Fragment() {
                 //TODO DaTeTimeParseException
                 val uri = imagesPaths
 
-                if (title != null && text != null && uri != null) {
                     val post = PostDtoInput(
                         id = 0,
                         title = title,
@@ -96,7 +95,7 @@ class NewPostFragment : Fragment() {
                     )
 
                     GlobalScope.launch { holidayViewModel.insert(post) }
-                }
+
             } else {
                 Toast.makeText(
                     context, R.string.empty_not_saved,

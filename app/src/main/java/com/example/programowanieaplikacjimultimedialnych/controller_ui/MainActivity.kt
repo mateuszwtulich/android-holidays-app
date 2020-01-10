@@ -39,11 +39,11 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
            .commit()
     }
 
-    fun addFragmentWithAnimation(fragment: Fragment,view :View, sharedElementName: String){
+    fun replaceFragmentWithAnimation(fragment: Fragment,view :View, sharedElementName: String){
         supportFragmentManager
             .beginTransaction()
             .addSharedElement(view, sharedElementName)
-            .add(R.id.fragment_container, fragment)
+            .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -61,3 +61,16 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
 
 }
 
+/*
+Animacja działa ale jak zrobić czekanie na załadowanie się viewPagerów przy przejściu
+Gdy działa animacja nie można ustawić pozycji viewpager podczas powrotu z posta
+Shared element
+
+*/
+/*
+TODO
+Cień / chowanie się serachbara
+Zrobienia zdjęcia i dodanie go do lub przeniesienie go do tworzenia nowego posta
+
+Mati : Wywala błąd przy description jak da się za dużo znaków nowej lini
+ */

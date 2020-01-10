@@ -181,7 +181,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
             ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
         //Start Fragmentu z animacją
-        (activity as MainActivity).addFragmentWithAnimation(fragment, view, "trans_($position,$image)")
+        (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)")
     }
 
     //Klasa animacji
