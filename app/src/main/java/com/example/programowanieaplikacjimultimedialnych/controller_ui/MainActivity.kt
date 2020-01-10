@@ -8,9 +8,6 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.programowanieaplikacjimultimedialnych.R
-
-
 class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
 
     private val fragment =  MainFragment.newInstance()
@@ -26,12 +23,12 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        replaceFragment(fragment)
+        addFragment(fragment)
     }
 
-    fun replaceFragment(fragment: Fragment){
+    fun addFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
+            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -40,7 +37,7 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
         supportFragmentManager
             .beginTransaction()
             .addSharedElement(view, sharedElementName)
-            .add(R.id.fragment_container, fragment)
+            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
@@ -54,6 +51,11 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
                 return true
             }
         })
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount == 1) this.finish()
+        else supportFragmentManager.popBackStack()
     }
 
 }

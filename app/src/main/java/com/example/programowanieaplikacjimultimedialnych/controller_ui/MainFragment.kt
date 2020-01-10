@@ -16,6 +16,8 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 import java.lang.Exception
 import java.util.*
 
-class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearchActionListener,
+class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     HolidayListAdapter.OnPostListner {
 
     private val REQUEST_CODE_SPEACH_INPUT = 100
@@ -92,7 +94,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         })
 
         view.fab.setOnClickListener {
-            (activity as MainActivity).replaceFragment(NewPostFragment.newInstance())
+            (activity as MainActivity).addFragment(NewPostFragment.newInstance())
         }
 
         view.homeButton.setOnClickListener {
@@ -177,7 +179,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
             ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
         //Start Fragmentu z animacją
-        (activity as MainActivity).replaceFragment(fragment)
+        (activity as MainActivity).addFragment(fragment)
     }
 
     //Klasa animacji

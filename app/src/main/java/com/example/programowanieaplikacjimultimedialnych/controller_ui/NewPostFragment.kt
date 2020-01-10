@@ -41,7 +41,6 @@ class NewPostFragment : Fragment() {
 
         view.savePost.setOnClickListener {
             savePost()
-            (activity as MainActivity).replaceFragment(MainFragment.newInstance())
         }
 
         view.addImage.setOnClickListener {
