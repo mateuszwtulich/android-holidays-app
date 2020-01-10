@@ -16,11 +16,11 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
@@ -101,8 +101,10 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         }
 
         view.homeButton.setOnClickListener {
+
             view.recyclerview.stopScroll()
-            view.recyclerview.layoutManager?.scrollToPosition(0)
+            view.recyclerview.layoutManager?.smoothScrollToPosition(view.recyclerview,RecyclerView.State(), 0)
+
         }
         startPostponedEnterTransition()
         return view
