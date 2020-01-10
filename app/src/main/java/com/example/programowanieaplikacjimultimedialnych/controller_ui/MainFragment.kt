@@ -34,7 +34,6 @@ import java.util.*
 class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     HolidayListAdapter.OnPostListner {
 
-
     private val REQUEST_CODE_SPEACH_INPUT = 100
     private var searchText: CharSequence = ""
     private lateinit var holidayViewModel: HolidayViewModel
@@ -50,6 +49,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     ): View? {
 
         postponeEnterTransition()
+
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
         adapter = HolidayListAdapter(requireContext(), this)
@@ -163,9 +163,6 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onPostClick(position: Int, image: Int) {
-
-
-
         val post = adapter.getFilterdPost(position)
         val fragment = PostFragment.newInstance()
         searchBar.disableSearch()

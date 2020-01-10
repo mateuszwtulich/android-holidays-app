@@ -37,9 +37,10 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
     fun replaceFragmentWithAnimation(fragment: Fragment, view: View, sharedElementName: String) {
         supportFragmentManager
             .beginTransaction()
+            .setReorderingAllowed(true)
             .addSharedElement(view, sharedElementName)
-        .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
-        .addToBackStack(null)
+            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 

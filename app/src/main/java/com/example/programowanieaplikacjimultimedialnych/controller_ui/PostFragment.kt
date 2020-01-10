@@ -21,8 +21,7 @@ import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
 import javax.sql.DataSource
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-
-
+import kotlinx.android.synthetic.main.fragment_new_post.view.*
 
 
 class PostFragment : Fragment() {
@@ -71,12 +70,17 @@ class PostFragment : Fragment() {
             indicator.attachToPager(pagerView)
             pagerView.setCurrentItem(imagePosition, false)
 
-            //!!!
-            (activity as MainActivity).scheduleStartPostponedTransition(view.findViewById<ViewPager>(R.id.PagerView))
+          //  (activity as MainActivity).scheduleStartPostponedTransition(pagerView)
+
         }
         return view
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        startPostponedEnterTransition()
+    }
 
     override fun onStop() {
         super.onStop()

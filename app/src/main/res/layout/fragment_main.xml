@@ -41,9 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:text="Wakacje"
+            android:elevation="@dimen/corner_radius_rounded"
             android:textStyle="bold"
             android:contentDescription="@string/appbar_scrolling_view_behavior"
-
             android:textColor="@color/primaryDarkColor"
             android:textSize="12sp"
             android:layout_marginLeft="70dp"
