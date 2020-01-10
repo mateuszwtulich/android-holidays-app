@@ -1,3 +1,4 @@
+
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.os.Bundle
@@ -5,17 +6,15 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.programowanieaplikacjimultimedialnych.R
 
 
-class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFragment.PostFragmentListner{
+class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
 
     private val fragment =  MainFragment.newInstance()
 
-    override fun updateMF() {}
 
     override fun updatePF(bundle: Bundle) {
         Log.d("Main activity:" ,bundle.toString())
@@ -27,16 +26,14 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, fragment)
-            .commit()
+        replaceFragment(fragment)
     }
 
-    fun addFragment(fragment: Fragment){
-       supportFragmentManager.beginTransaction()
-           .add(R.id.fragment_container, fragment)
-           .addToBackStack(null)
-           .commit()
+    fun replaceFragment(fragment: Fragment){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     fun addFragmentWithAnimation(fragment: Fragment,view :View, sharedElementName: String){
@@ -60,4 +57,3 @@ class MainActivity : AppCompatActivity(),MainFragment.MainFragmentListner,PostFr
     }
 
 }
-

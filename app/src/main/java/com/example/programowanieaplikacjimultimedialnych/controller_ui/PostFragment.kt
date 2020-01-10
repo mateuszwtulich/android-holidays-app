@@ -36,8 +36,8 @@ class PostFragment : Fragment() {
             val array = arguments?.getIntArray("positions")
 
             val title: TextView = view.findViewById(R.id.Title)
-            val text: TextView = view.findViewById(R.id.TextContnet)
-            val localisation: TextView = view.findViewById(R.id.localistaionText)
+            val description: TextView = view.findViewById(R.id.description)
+            val localization: TextView = view.findViewById(R.id.localization)
             val date: TextView = view.findViewById(R.id.dateText)
             val pagerView = view.findViewById<ViewPager>(R.id.PagerView)
             val indicator = view.findViewById<ScrollingPagerIndicator>(R.id.indicator)
@@ -46,8 +46,8 @@ class PostFragment : Fragment() {
             imagePosition = array[1]
 
             title.text = postDtoOutput?.title
-            text.text = postDtoOutput?.text
-            localisation.text = postDtoOutput?.location.toString()
+            description.text = postDtoOutput?.text
+            localization.text = postDtoOutput?.location.toString()
             date.text = postDtoOutput?.date?.format(formater)
 
             val adapter = ViewPagerAdapter(context!!, postDtoOutput!!.uriList, null, array[0])

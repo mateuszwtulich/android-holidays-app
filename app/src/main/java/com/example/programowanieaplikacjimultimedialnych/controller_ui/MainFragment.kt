@@ -1,3 +1,4 @@
+
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.app.Activity
@@ -39,11 +40,6 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
 
     private var currentPost: Int = 0
     private var currentImage: Int = 0
-
-    interface MainFragmentListner{
-        fun updateMF()
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +92,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
         })
 
         view.fab.setOnClickListener {
-            (activity as MainActivity).addFragment(NewPostFragment.newInstance())
+            (activity as MainActivity).replaceFragment(NewPostFragment.newInstance())
         }
 
         view.homeButton.setOnClickListener {
@@ -181,7 +177,7 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
             ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
         //Start Fragmentu z animacją
-        (activity as MainActivity).addFragmentWithAnimation(fragment, view, "trans_($position,$image)")
+        (activity as MainActivity).replaceFragment(fragment)
     }
 
     //Klasa animacji
@@ -204,4 +200,3 @@ class MainFragment : androidx.fragment.app.Fragment(), MaterialSearchBar.OnSearc
     }
 
 }
-

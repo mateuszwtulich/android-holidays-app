@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_new_post.*
 import kotlinx.android.synthetic.main.fragment_new_post.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -40,6 +41,7 @@ class NewPostFragment : Fragment() {
 
         view.savePost.setOnClickListener {
             savePost()
+            (activity as MainActivity).replaceFragment(MainFragment.newInstance())
         }
 
         view.addImage.setOnClickListener {
@@ -57,10 +59,12 @@ class NewPostFragment : Fragment() {
 
 
         view.text_input_date.setStartIconOnClickListener {
-            addDate(year, month, day)
+            addDate(calendar, year, month, day)
         }
 
         view.text_input_location.setStartIconOnClickListener {
+            val intent = Intent (getActivity(), LocationSearch::class.java)
+            getActivity()!!.startActivity(intent)
         }
         return view
     }
@@ -82,6 +86,7 @@ class NewPostFragment : Fragment() {
                 val title = view!!.text_input_title.editText!!.text.toString()
 
                 val text = view!!.text_input_description.editText!!.text.toString()
+
                 val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
                 //TODO DaTeTimeParseException
                 val uri = imagesPaths
@@ -121,10 +126,14 @@ class NewPostFragment : Fragment() {
         }
     }
 
-    fun addDate(year: Int, month: Int, day: Int){
+    fun addDate(calendar: Calendar, year: Int, month: Int, day: Int){
         val datePicker = DatePickerDialog(context, DatePickerDialog.OnDateSetListener { viewT, Tyear, Tmonth, Tday ->
-            view!!.text_input_date.dateText.setText("" + Tday + "/" + Tmonth + "/" + Tyear)
+//            view!!.text_input_date.dateText.setText("$Tday/$Tmonth/$Tyear")
+            calendar.set(Tyear, Tmonth, Tday)
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+            view!!.text_input_date.dateText.setText(dateFormat.format(calendar.time))
         }, year, month, day)
+
         datePicker.show()
     }
 
