@@ -1,6 +1,8 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 
+import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_post.*
+import kotlinx.android.synthetic.main.fragment_post.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
@@ -47,7 +52,9 @@ class PostFragment : Fragment() {
 
             title.text = postDtoOutput?.title
             description.text = postDtoOutput?.text
-            localization.text = postDtoOutput?.location.toString()
+            val geocoder = Geocoder(context)
+            val adresses = geocoder.getFromLocation(postDtoOutput?.location!!.latitude, postDtoOutput?.location.longitude, 1)[0]
+            localization.text = adresses.getAddressLine(0).toString()
             date.text = postDtoOutput?.date?.format(formater)
 
             val adapter = ViewPagerAdapter(context!!, postDtoOutput!!.uriList, null, array[0])
@@ -64,6 +71,14 @@ class PostFragment : Fragment() {
             pagerView.setCurrentItem(imagePosition, false)
 
             (activity as MainActivity).scheduleStartPostponedTransition(view.findViewById<ViewPager>(R.id.PagerView))
+
+            view.locationsMap.setOnClickListener {
+                val intent = Intent(getActivity(), LocationsOnMapActivity::class.java)
+                intent.putExtra("postsList", arguments?.getParcelableArrayList<PostDtoOutput>("postsList"))
+                intent.putExtra("markerOptions",  MarkerOptions().position(
+                    LatLng(postDtoOutput?.location!!.latitude, postDtoOutput?.location.longitude)).title(adresses.getAddressLine(0).toString()))
+                startActivityForResult(intent, LOCATION_CODE)
+            }
         }
         return view
     }
@@ -83,6 +98,7 @@ class PostFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = PostFragment()
+        private const val LOCATION_CODE = 1002
     }
 
 }

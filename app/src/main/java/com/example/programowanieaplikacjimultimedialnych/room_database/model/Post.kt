@@ -8,6 +8,6 @@ class Post(@PrimaryKey(autoGenerate = true) val id: Int,
            val title : String,
            val text : String,
            val date : String,
-           val attitude  : Double,
-           val latitude : Double)
+           val latitude : Double,
+           val longitude : Double)
 

@@ -8,10 +8,10 @@ import java.time.Month
 
 @Parcelize
 class PostDtoOutput(
-    var id : Int,
-    var title : String,
-    var text : String,
-    var location : Pair<Double,Double> = Pair(8.0,8.0),
-    var date  : LocalDate = LocalDate.of(2016, Month.APRIL, 15),
-    var uriList: List<Uri>
+    val id : Int,
+    val title : String,
+    val text : String,
+    val location : Location,
+    val date  : LocalDate,
+    val uriList: List<Uri>
 ) : Parcelable

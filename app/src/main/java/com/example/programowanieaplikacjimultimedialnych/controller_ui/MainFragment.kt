@@ -25,11 +25,13 @@ import androidx.transition.*
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
+import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     HolidayListAdapter.OnPostListner {
@@ -38,6 +40,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     private var searchText: CharSequence = ""
     private lateinit var holidayViewModel: HolidayViewModel
     private lateinit var adapter: HolidayListAdapter
+    private var postList = listOf<PostDtoOutput>()
     private lateinit var filter: Filter
 
     private var currentPost: Int = 0
@@ -66,6 +69,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
             posts?.let {
                 adapter.setPosts(it)
                 adapter.notifyDataSetChanged()
+                postList = posts
             }
         })
 
@@ -164,7 +168,10 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         searchBar.disableSearch()
 
         //Dane
+        var postsArray = ArrayList<PostDtoOutput>()
+        postsArray.addAll(postList)
         fragment.arguments = Bundle()
+        fragment.arguments?.putParcelableArrayList("postsList", postsArray)
         fragment.arguments?.putParcelable("post", post)
         fragment.arguments?.putIntArray("positions", intArrayOf(position, image))
 

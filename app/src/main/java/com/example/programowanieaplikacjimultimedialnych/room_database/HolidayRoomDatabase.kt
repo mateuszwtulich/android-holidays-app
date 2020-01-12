@@ -11,7 +11,7 @@ import com.example.programowanieaplikacjimultimedialnych.room_database.model.Pos
 
 
 // Annotates class to be a Room Database with a table (entity) of the Word class
-@Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 1, exportSchema = false) //export Schema w normalnej apce inaczej
+@Database(entities = arrayOf(Post::class, MultimediaPath::class), version = 2, exportSchema = false) //export Schema w normalnej apce inaczej
 abstract class HolidayRoomDatabase : RoomDatabase() {
 
     abstract fun postDao(): PostDao

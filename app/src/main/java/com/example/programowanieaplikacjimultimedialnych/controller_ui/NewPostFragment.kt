@@ -15,9 +15,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
-import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
+import com.example.programowanieaplikacjimultimedialnych.view_model.dto.Location
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_new_post.*
 import kotlinx.android.synthetic.main.fragment_new_post.view.*
 import kotlinx.coroutines.GlobalScope
@@ -31,13 +32,14 @@ class NewPostFragment : Fragment() {
 
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     private var imagesPaths: ArrayList<String> = ArrayList()
+    private var markerOptions: MarkerOptions = MarkerOptions()
     private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_new_post, container, false)
+        val view = inflater.inflate(com.example.programowanieaplikacjimultimedialnych.R.layout.fragment_new_post, container, false)
 
         view.savePost.setOnClickListener {
             savePost()
@@ -47,7 +49,7 @@ class NewPostFragment : Fragment() {
             addMultimedia()
         }
 
-        view.images_viewpager.setOnClickListener {
+        view.select_image.setOnClickListener {
             addMultimedia()
         }
 
@@ -62,72 +64,57 @@ class NewPostFragment : Fragment() {
         }
 
         view.text_input_location.setStartIconOnClickListener {
-            val intent = Intent (getActivity(), LocationSearch::class.java)
-            getActivity()!!.startActivity(intent)
+            val intent = Intent(getActivity(), LocationSearch::class.java)
+
+            if(markerOptions.title != null) intent.putExtra("markerOptions", markerOptions)
+            startActivityForResult(intent, LOCATION_CODE)
         }
         return view
     }
 
     fun savePost() {
-        var resultCode: Int
-        if (TextUtils.isEmpty(view!!.text_input_title.editText.toString()) ||
-            TextUtils.isEmpty(view!!.text_input_description.editText.toString())
+        if (!TextUtils.isEmpty(view!!.text_input_date.editText!!.text.toString()) && !TextUtils.isEmpty(view!!.text_input_title.editText!!.text.toString())
+            && !TextUtils.isEmpty(view!!.text_input_description.editText!!.text.toString()) && !TextUtils.isEmpty(view!!.text_input_location.editText!!.text.toString())
+            && imagesPaths.size > 0
         ) {
+            val title = view!!.text_input_title.editText!!.text.toString()
+            val text = view!!.text_input_description.editText!!.text.toString()
+            val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
+            val uri = imagesPaths
+            val location = Location(markerOptions.position.latitude, markerOptions.position.longitude)
+
+            val post = PostDtoInput(
+                id = 0,
+                title = title,
+                text = text,
+                date = localDate,
+                uriList = uri,
+                location = location
+            )
+
+            GlobalScope.launch { holidayViewModel.insert(post) }
+            (activity as MainActivity).supportFragmentManager.popBackStack()
+        } else {
             Toast.makeText(
-                context, R.string.no_chars,
+                context, com.example.programowanieaplikacjimultimedialnych.R.string.empty_not_saved,
                 Toast.LENGTH_LONG
             ).show()
-            resultCode = Activity.RESULT_CANCELED
-        } else {
-            resultCode = Activity.RESULT_OK
-
-            if (resultCode == Activity.RESULT_OK && !TextUtils.isEmpty(view!!.text_input_date.editText!!.text.toString())) {
-                val title = view!!.text_input_title.editText!!.text.toString()
-
-                val text = view!!.text_input_description.editText!!.text.toString()
-
-                val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
-                //TODO DaTeTimeParseException
-                val uri = imagesPaths
-
-                if (title != null && text != null && uri != null) {
-                    val post = PostDtoInput(
-                        id = 0,
-                        title = title,
-                        text = text,
-                        date = localDate,
-                        uriList = uri
-                    )
-
-                    GlobalScope.launch { holidayViewModel.insert(post) }
-                }
-            } else {
-                Toast.makeText(
-                    context, R.string.empty_not_saved,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
         }
     }
 
-    fun addMultimedia(){
-        //check runtime permission
+    fun addMultimedia() {
         if (checkSelfPermission(this.requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
             PackageManager.PERMISSION_DENIED
         ) {
-            //permission denied
             val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-            //show popup to request runtime permission
             requestPermissions(permissions, NewPostFragment.PERMISSION_CODE)
         } else {
-            //permission already granted
             pickImageFromGallery()
         }
     }
 
-    fun addDate(calendar: Calendar, year: Int, month: Int, day: Int){
+    fun addDate(calendar: Calendar, year: Int, month: Int, day: Int) {
         val datePicker = DatePickerDialog(context, DatePickerDialog.OnDateSetListener { viewT, Tyear, Tmonth, Tday ->
-//            view!!.text_input_date.dateText.setText("$Tday/$Tmonth/$Tyear")
             calendar.set(Tyear, Tmonth, Tday)
             val dateFormat = SimpleDateFormat("dd/MM/yyyy")
             view!!.text_input_date.dateText.setText(dateFormat.format(calendar.time))
@@ -137,49 +124,50 @@ class NewPostFragment : Fragment() {
     }
 
     fun pickImageFromGallery() {
-        //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        startActivityForResult(intent, NewPostFragment.IMAGE_PICK_CODE)
+        startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        imagesPaths.clear()
-        if (resultCode == Activity.RESULT_OK && requestCode == NewPostFragment.IMAGE_PICK_CODE) {
+
+        if (resultCode == Activity.RESULT_OK && requestCode == LOCATION_CODE) {
+            markerOptions = data!!.getParcelableExtra("localization")
+            text_input_location.locationText.setText(markerOptions.title.toString())
+        }
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            imagesPaths.clear()
             val count = data?.clipData?.itemCount
-            if(count != null){
-                for (i in 0..(count - 1) ){
+            if (count != null) {
+                for (i in 0..(count - 1)) {
                     imagesPaths.add(data.clipData?.getItemAt(i)?.uri.toString())
                 }
             }
-            if(count == null){
+            if (count == null) {
                 imagesPaths.add(data?.data.toString())
             }
-        }
-        val adapter = ViewPagerAdapter(requireContext(), imagesPaths.map { path -> Uri.parse(path)},null,1)
+            val adapter = ViewPagerAdapter(requireContext(), imagesPaths.map { path -> Uri.parse(path) }, null, 1)
 
-        view!!.images_viewpager.adapter = adapter
+            view!!.images_viewpager.adapter = adapter
 
-        if(imagesPaths.count() > 1){                    //visibility może inaczej ?
-            view!!.indicator.visibility = View.VISIBLE
-            view!!.indicator.attachToPager(view!!.images_viewpager)
+            if (imagesPaths.count() > 1) {
+                view!!.indicator.visibility = View.VISIBLE
+                view!!.indicator.attachToPager(view!!.images_viewpager)
+            } else
+                view!!.indicator.visibility = View.INVISIBLE
         }
-        else
-            view!!.indicator.visibility = View.INVISIBLE
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
-            NewPostFragment.PERMISSION_CODE -> {
+            PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
-                    //permission from popup granted
                     pickImageFromGallery()
                 } else {
-                    //permission from popup denied
                     Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -187,10 +175,9 @@ class NewPostFragment : Fragment() {
     }
 
     companion object {
-        //image pick code
         private const val IMAGE_PICK_CODE = 1000
-        //Permission code
         private const val PERMISSION_CODE = 1001
+        private const val LOCATION_CODE = 1002
         @JvmStatic
         fun newInstance() = NewPostFragment()
     }

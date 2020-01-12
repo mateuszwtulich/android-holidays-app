@@ -8,6 +8,7 @@ import com.example.programowanieaplikacjimultimedialnych.room_database.dao.Multi
 import com.example.programowanieaplikacjimultimedialnych.room_database.dao.PostDao
 import com.example.programowanieaplikacjimultimedialnych.room_database.model.MultimediaPath
 import com.example.programowanieaplikacjimultimedialnych.room_database.model.Post
+import com.example.programowanieaplikacjimultimedialnych.view_model.dto.Location
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
 import java.time.LocalDate
@@ -30,7 +31,7 @@ class HolidayRepository(private val postDao: PostDao, private val multimediaPath
                 post.id,
                 post.title,
                 post.text,
-                Pair(post.latitude, post.attitude),
+                Location(post.latitude, post.longitude),
                 LocalDate.parse(post.date, formatter),
                 runBlocking {
                     multimediaPathDao.getMultimediaPaths(post.id)
@@ -44,7 +45,7 @@ class HolidayRepository(private val postDao: PostDao, private val multimediaPath
             post.id,
             post.title,
             post.text,
-            Pair(post.latitude, post.attitude),
+            Location(post.latitude, post.longitude),
             LocalDate.parse(post.date, formatter),
             runBlocking {
                 multimediaPathDao.getMultimediaPaths(post.id).map { multimediaPath -> Uri.parse(multimediaPath.path) }
@@ -57,8 +58,8 @@ class HolidayRepository(private val postDao: PostDao, private val multimediaPath
             postDto.title,
             postDto.text,
             postDto.date.format(formatter),
-            postDto.location.first,
-            postDto.location.second
+            postDto.location.latitude,
+            postDto.location.longitude
         )
         val id = postDao.insert(post).toInt()
         postDto.uriList.forEach { path -> multimediaPathDao.insert(MultimediaPath(0, path, id)) }
@@ -71,8 +72,8 @@ class HolidayRepository(private val postDao: PostDao, private val multimediaPath
                 post.title,
                 post.text,
                 post.date.format(formatter),
-                post.location.first,
-                post.location.second
+                post.location.latitude,
+                post.location.longitude
             )
         )
     }
