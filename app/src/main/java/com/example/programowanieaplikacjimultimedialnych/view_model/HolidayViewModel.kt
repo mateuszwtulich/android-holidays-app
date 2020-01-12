@@ -30,7 +30,7 @@ class HolidayViewModel(application: Application) : AndroidViewModel(application)
 
     suspend fun insert(postDto: PostDtoInput) = repository.insertPost(postDto)
 
-    suspend fun deletePost(post: PostDtoInput) = repository.deletePost(post)
+    suspend fun deletePost(post: PostDtoOutput) = repository.deletePost(post)
 
     suspend fun deleteAllPosts() = repository.deleteAllPost()
 }

@@ -16,11 +16,12 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
@@ -50,6 +51,9 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        postponeEnterTransition()
+
         val view = inflater.inflate(R.layout.fragment_main, container, false)
 
         adapter = HolidayListAdapter(requireContext(), this)
@@ -76,7 +80,12 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         view.searchBar.setOnSearchActionListener(this)
         view.searchBar.placeHolderView.ellipsize = TextUtils.TruncateAt.END
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
-        view.searchBar.setCardViewElevation(0)
+        var cardView  = view.findViewById<CardView>(R.id.mt_container)
+
+        view.searchBar.setCardViewElevation(10)
+        cardView.useCompatPadding = true
+
+
 
         if (searchText != "")
             filter.filter(searchText)
@@ -98,13 +107,16 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         })
 
         view.fab.setOnClickListener {
-            (activity as MainActivity).addFragment(NewPostFragment.newInstance())
+            (activity as MainActivity).replaceFragment(NewPostFragment.newInstance())
         }
 
         view.homeButton.setOnClickListener {
+
             view.recyclerview.stopScroll()
-            view.recyclerview.layoutManager?.scrollToPosition(0)
+            view.recyclerview.layoutManager?.smoothScrollToPosition(view.recyclerview,RecyclerView.State(), 0)
+
         }
+        startPostponedEnterTransition()
         return view
     }
 
@@ -161,8 +173,6 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onPostClick(position: Int, image: Int) {
-        postponeEnterTransition()
-
         val post = adapter.getFilterdPost(position)
         val fragment = PostFragment.newInstance()
         searchBar.disableSearch()
@@ -186,7 +196,9 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
             ?.findViewById<ViewPager>(R.id.PagerView)!!.findViewWithTag<ImageView>("image$image")
 
         //Start Fragmentu z animacją
-        (activity as MainActivity).addFragment(fragment)
+
+        (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)","postFragment")
+
     }
 
     //Klasa animacji

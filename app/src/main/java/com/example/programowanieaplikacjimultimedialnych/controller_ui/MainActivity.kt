@@ -8,36 +8,40 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
 
-    private val fragment =  MainFragment.newInstance()
+class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
+
+
+    private val fragment = MainFragment.newInstance()
 
 
     override fun updatePF(bundle: Bundle) {
-        Log.d("Main activity:" ,bundle.toString())
+        Log.d("Main activity:", bundle.toString())
         fragment.updateData(bundle)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.programowanieaplikacjimultimedialnych.R.layout.activity_main)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
-        addFragment(fragment)
+        replaceFragment(MainFragment.newInstance())
     }
 
-    fun addFragment(fragment: Fragment){
+    fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
 
-    fun addFragmentWithAnimation(fragment: Fragment,view :View, sharedElementName: String){
+    fun replaceFragmentWithAnimation(fragment: Fragment, view: View, sharedElementName: String,name: String) {
         supportFragmentManager
             .beginTransaction()
+            .setReorderingAllowed(true)
             .addSharedElement(view, sharedElementName)
-            .add(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment,"postFragment")
             .addToBackStack(null)
             .commit()
     }
@@ -54,8 +58,24 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner{
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount == 1) this.finish()
+        if (supportFragmentManager.backStackEntryCount == 1) this.finish()
         else supportFragmentManager.popBackStack()
     }
 
 }
+/*
+Animacja działa ale jak zrobić czekanie na załadowanie się viewPagerów przy przejściu
+Gdy działa animacja nie można ustawić pozycji viewpager podczas powrotu z posta
+Shared element
+OnPreDraw znajduje view pagera ale nie jego dzieci !!!
+
+*/
+/*
+TODO
+Cień / chowanie się serachbara
+Zrobienia zdjęcia i dodanie go do lub przeniesienie go do tworzenia nowego posta
+
+Mati : Wywala błąd przy description jak da się za dużo znaków nowej lini
+ */
+
+
