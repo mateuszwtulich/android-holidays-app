@@ -64,7 +64,7 @@ class HolidayRepository(private val postDao: PostDao, private val multimediaPath
         postDto.uriList.forEach { path -> multimediaPathDao.insert(MultimediaPath(0, path, id)) }
     }
 
-    suspend fun deletePost(post: PostDtoInput) {
+    suspend fun deletePost(post: PostDtoOutput) {
         postDao.deletePost(
             Post(
                 post.id,

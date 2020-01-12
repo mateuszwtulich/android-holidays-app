@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -75,7 +76,11 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         view.searchBar.setOnSearchActionListener(this)
         view.searchBar.placeHolderView.ellipsize = TextUtils.TruncateAt.END
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
-        view.searchBar.setCardViewElevation(0)
+        var cardView  = view.findViewById<CardView>(R.id.mt_container)
+        view.searchBar.setCardViewElevation(6)
+        cardView.useCompatPadding = true
+
+
 
         if (searchText != "")
             filter.filter(searchText)
@@ -184,7 +189,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
 
         //Start Fragmentu z animacją
 
-        (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)")
+        (activity as MainActivity).replaceFragmentWithAnimation(fragment, view, "trans_($position,$image)","postFragment")
 
     }
 

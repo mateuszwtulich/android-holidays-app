@@ -1,33 +1,35 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 
-import android.graphics.drawable.Drawable
-import android.media.Image
+import android.app.Application
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.example.programowanieaplikacjimultimedialnych.R
+import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
-import kotlinx.android.synthetic.main.fragment_post.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.android.parcel.Parcelize
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
-import javax.sql.DataSource
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import kotlinx.android.synthetic.main.fragment_new_post.view.*
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class PostFragment : Fragment() {
+class PostFragment : Fragment(),BottomSheetDialog.Sheet {
 
     private var imagePosition: Int = 0
     private var postPosition: Int = 0
+    private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
+    lateinit var postDtoOutput: PostDtoOutput
+    lateinit var bottomSheetDialog: BottomSheetDialog
     private val formater = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
     interface PostFragmentListner {
@@ -39,7 +41,7 @@ class PostFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_post, container, false)
 
         if (arguments != null) {
-            val postDtoOutput = arguments?.getParcelable<PostDtoOutput>("post")
+            postDtoOutput = arguments?.getParcelable<PostDtoOutput>("post")!!
             val array = arguments?.getIntArray("positions")
 
             val title: TextView = view.findViewById(R.id.Title)
@@ -48,16 +50,25 @@ class PostFragment : Fragment() {
             val date: TextView = view.findViewById(R.id.dateText)
             val pagerView = view.findViewById<ViewPager>(R.id.PagerView)
             val indicator = view.findViewById<ScrollingPagerIndicator>(R.id.indicator)
+            val closeButton = view.findViewById<ImageButton>(R.id.closeButton)
+            val expandButton = view.findViewById<ImageButton>(R.id.expandMenu)
+
+
+            closeButton.setOnClickListener {
+                Thread.sleep(150)
+               (activity as MainActivity).supportFragmentManager.popBackStack()
+            }
+
 
             postPosition = array!![0]
             imagePosition = array[1]
 
-            title.text = postDtoOutput?.title
-            description.text = postDtoOutput?.text
-            localization.text = postDtoOutput?.location.toString()
-            date.text = postDtoOutput?.date?.format(formater)
+            title.text = postDtoOutput.title
+            description.text = postDtoOutput.text
+            localization.text = postDtoOutput.location.toString()
+            date.text = postDtoOutput.date.format(formater)
 
-            val adapter = ViewPagerAdapter(context!!, postDtoOutput!!.uriList, null, array[0])
+            val adapter = ViewPagerAdapter(context!!, postDtoOutput.uriList, null, array[0])
             pagerView.adapter = adapter
             pagerView.offscreenPageLimit = 6
 
@@ -70,10 +81,26 @@ class PostFragment : Fragment() {
             indicator.attachToPager(pagerView)
             pagerView.setCurrentItem(imagePosition, false)
 
+            expandButton.setOnClickListener {
+                bottomSheetDialog  =  BottomSheetDialog()
+
+                bottomSheetDialog.show(activity!!.supportFragmentManager,"example")
+            }
+
           //  (activity as MainActivity).scheduleStartPostponedTransition(pagerView)
 
         }
         return view
+    }
+
+    override fun delete() {
+        GlobalScope.launch {
+            holidayViewModel.deletePost(postDtoOutput)
+
+        }
+        bottomSheetDialog.dismiss()
+        val manager = (activity as  MainActivity).supportFragmentManager
+        manager.popBackStackImmediate()
     }
 
 

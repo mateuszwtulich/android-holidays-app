@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
 
+
     private val fragment = MainFragment.newInstance()
 
 
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
         Log.d("Main activity:", bundle.toString())
         fragment.updateData(bundle)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +36,12 @@ class MainActivity : AppCompatActivity(),PostFragment.PostFragmentListner {
             .commit()
     }
 
-    fun replaceFragmentWithAnimation(fragment: Fragment, view: View, sharedElementName: String) {
+    fun replaceFragmentWithAnimation(fragment: Fragment, view: View, sharedElementName: String,name: String) {
         supportFragmentManager
             .beginTransaction()
             .setReorderingAllowed(true)
             .addSharedElement(view, sharedElementName)
-            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment)
+            .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment,"postFragment")
             .addToBackStack(null)
             .commit()
     }
