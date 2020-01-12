@@ -41,7 +41,7 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
         val view = inflater.inflate(R.layout.fragment_post, container, false)
 
         if (arguments != null) {
-            postDtoOutput = arguments?.getParcelable<PostDtoOutput>("post")!!
+            postDtoOutput = arguments?.getParcelable("post")!!
             val array = arguments?.getIntArray("positions")
 
             val title: TextView = view.findViewById(R.id.Title)

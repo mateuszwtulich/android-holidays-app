@@ -77,7 +77,8 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         view.searchBar.placeHolderView.ellipsize = TextUtils.TruncateAt.END
         view.searchBar.placeHolderView.setTypeface(null, Typeface.NORMAL)
         var cardView  = view.findViewById<CardView>(R.id.mt_container)
-        view.searchBar.setCardViewElevation(6)
+
+        view.searchBar.setCardViewElevation(10)
         cardView.useCompatPadding = true
 
 

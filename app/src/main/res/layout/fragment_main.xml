@@ -68,6 +68,7 @@
             app:mt_speechMode="true"
             app:mt_hint="Szukaj..."
             app:mt_navIconEnabled="false"
+            app:mt_roundedSearchBarEnabled="true"
             app:mt_maxSuggestionsCount="0"
             app:mt_placeholderColor="@color/searchBarBackIconTintColor"
             android:outlineProvider="bounds"
