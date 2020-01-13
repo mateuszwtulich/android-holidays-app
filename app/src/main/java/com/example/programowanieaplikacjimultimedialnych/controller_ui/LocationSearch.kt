@@ -7,23 +7,18 @@ import android.graphics.Typeface
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.net.wifi.WifiConfiguration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
-import android.view.ViewParent
 import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.annotation.NonNull
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.programowanieaplikacjimultimedialnych.R
-import com.google.android.gms.common.api.Status
-
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,29 +26,17 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.*
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
 import kotlinx.android.synthetic.main.activity_location_search.*
-import kotlinx.android.synthetic.main.activity_location_search.view.*
-import java.io.IOException
 import java.lang.Math.abs
-import java.util.*
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import kotlin.collections.ArrayList
 
 class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -127,21 +110,18 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 var answer = "0"
 
                 placesClient.findAutocompletePredictions(predictionsRequest)
-                    .addOnCompleteListener(object : OnCompleteListener<FindAutocompletePredictionsResponse> {
+                    .addOnCompleteListener { task ->
+                        predictionList = task.result!!.autocompletePredictions
 
-                        override fun onComplete(task: Task<FindAutocompletePredictionsResponse>) {
-                            predictionList = task.getResult()!!.autocompletePredictions
-
-                            searchPlace.updateLastSuggestions(predictionList.map { prediction ->
-                                prediction.getFullText(null).toString()
-                            })
-                            searchPlace.showSuggestionsList()
-                            if (predictionList.size > 0) {
-                                answer = predictionList[0].toString()
-                            }
+                        searchPlace.updateLastSuggestions(predictionList.map { prediction ->
+                            prediction.getFullText(null).toString()
+                        })
+                        searchPlace.showSuggestionsList()
+                        if (predictionList.size > 0) {
+                            answer = predictionList[0].toString()
                         }
-                    })
-                Toast.makeText(baseContext, "${answer}", Toast.LENGTH_SHORT).show()
+                    }
+                Toast.makeText(baseContext, answer, Toast.LENGTH_SHORT).show()
 
             }
 
@@ -150,7 +130,7 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         })
         searchPlace.setSuggestionsClickListener(object : SuggestionsAdapter.OnItemViewClickListener {
             override fun OnItemClickListener(position: Int, v: View?) {
-                val suggestion: String = searchPlace.lastSuggestions.get(position).toString()
+                val suggestion: String = searchPlace.lastSuggestions[position].toString()
                 placeMarkerOnMap(getLatLng(suggestion))
                 searchPlace.text = suggestion
                 searchPlace.clearSuggestions()
@@ -166,36 +146,11 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     }
 
     private fun setUpMap() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE
-            )
-
-        }
 
         if(intent.hasExtra("markerOptions")){
             val markerOptions = intent.getParcelableExtra("markerOptions") as MarkerOptions
             placeMarkerOnMap(markerOptions.position)
         }
-
-        map.isMyLocationEnabled = true
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
-            if (location != null) {
-                lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-                if(!intent.hasExtra("markerOptions")) {
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, ZOOM))
-                }
-            }
-        }
-
 
     }
 
@@ -218,8 +173,8 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     private fun getLatLng(location: String): LatLng {
         val geocoder = Geocoder(this)
         val adresses: List<Address> = geocoder.getFromLocationName(location, 1)
-        if (adresses.size > 0) {
-            return LatLng(adresses.get(0).latitude, adresses.get(0).longitude)
+        if (adresses.isNotEmpty()) {
+            return LatLng(adresses[0].latitude, adresses[0].longitude)
         }
         return LatLng(0.0, 0.0)
     }
@@ -229,13 +184,36 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         val addresses: List<Address>?
         addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
-        return addresses[0].getAddressLine(0)
+        return addresses[0].locality
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.getUiSettings().setZoomControlsEnabled(true)
+        map.uiSettings.isZoomControlsEnabled = true
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE)
+        }
+
+        map.isMyLocationEnabled = true
+        map.mapType = GoogleMap.MAP_TYPE_NORMAL
+
+        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                lastLocation = location
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+                if(!intent.hasExtra("markerOptions")) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, ZOOM))
+                }
+            }
+        }
+
         map.setOnMarkerClickListener(this)
 
         map.setOnMapClickListener {
@@ -243,20 +221,18 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             placeMarkerOnMap(it)
         }
 
-        map.setOnMapLongClickListener(object : GoogleMap.OnMapLongClickListener {
-            override fun onMapLongClick(latLng: LatLng) {
-                markerList.forEach {
-                    if(abs(it.position.latitude - latLng.latitude) < 0.02 &&
-                                abs(it.position.longitude - latLng.longitude) < 0.02)
-                        it.remove()
-                }
-
-                markerList.removeIf {
-                    (abs(it.position.latitude - latLng.latitude) < 0.02 &&
-                            abs(it.position.longitude - latLng.longitude) < 0.02)
-                }
+        map.setOnMapLongClickListener { latLng ->
+            markerList.forEach {
+                if(abs(it.position.latitude - latLng.latitude) < 0.02 &&
+                    abs(it.position.longitude - latLng.longitude) < 0.02)
+                    it.remove()
             }
-        })
+
+            markerList.removeIf {
+                (abs(it.position.latitude - latLng.latitude) < 0.02 &&
+                        abs(it.position.longitude - latLng.longitude) < 0.02)
+            }
+        }
 
         setUpMap()
     }

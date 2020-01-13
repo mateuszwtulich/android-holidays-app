@@ -1,19 +1,18 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Application
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.programowanieaplikacjimultimedialnych.R
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoOutput
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,10 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
-import kotlinx.android.synthetic.main.activity_location_search.*
 
 class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -79,7 +75,6 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
             )
 
         }
-
         map.isMyLocationEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
@@ -90,8 +85,8 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     private fun getLatLng(location: String): LatLng {
         val geocoder = Geocoder(this)
         val adresses: List<Address> = geocoder.getFromLocationName(location, 1)
-        if (adresses.size > 0) {
-            return LatLng(adresses.get(0).latitude, adresses.get(0).longitude)
+        if (adresses.isNotEmpty()) {
+            return LatLng(adresses[0].latitude, adresses[0].longitude)
         }
         return LatLng(0.0, 0.0)
     }
@@ -107,7 +102,7 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.getUiSettings().setZoomControlsEnabled(true)
+        map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
 
         setUpMap()

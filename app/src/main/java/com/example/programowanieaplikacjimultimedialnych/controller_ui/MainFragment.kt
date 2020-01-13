@@ -67,7 +67,6 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         view.recyclerview.setHasFixedSize(true)
         view.recyclerview.setItemViewCacheSize(15)
 
-
         holidayViewModel = ViewModelProvider(this).get(HolidayViewModel::class.java)
         holidayViewModel.allPosts.observe(requireActivity(), Observer { posts ->
             posts?.let {
@@ -84,8 +83,6 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
 
         view.searchBar.setCardViewElevation(10)
         cardView.useCompatPadding = true
-
-
 
         if (searchText != "")
             filter.filter(searchText)

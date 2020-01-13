@@ -36,7 +36,7 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     lateinit var postDtoOutput: PostDtoOutput
     lateinit var bottomSheetDialog: BottomSheetDialog
-    private val formater = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    private val formater = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
     interface PostFragmentListner {
         fun updatePF(bundle: Bundle)
@@ -69,12 +69,12 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
             postPosition = array!![0]
             imagePosition = array[1]
 
-            title.text = postDtoOutput?.title
-            description.text = postDtoOutput?.text
+            title.text = postDtoOutput.title
+            description.text = postDtoOutput.text
             val geocoder = Geocoder(context)
-            val adresses = geocoder.getFromLocation(postDtoOutput?.location!!.latitude, postDtoOutput?.location.longitude, 1)[0]
-            localization.text = adresses.getAddressLine(0).toString()
-            date.text = postDtoOutput?.date?.format(formater)
+            val adresses = geocoder.getFromLocation(postDtoOutput.location.latitude, postDtoOutput.location.longitude, 1)[0]
+            localization.text = adresses.locality.toString()
+            date.text = postDtoOutput.date.format(formater)
 
             val adapter = ViewPagerAdapter(context!!, postDtoOutput.uriList, null, array[0])
             pagerView.adapter = adapter
@@ -95,7 +95,7 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
                 val intent = Intent(getActivity(), LocationsOnMapActivity::class.java)
                 intent.putExtra("postsList", arguments?.getParcelableArrayList<PostDtoOutput>("postsList"))
                 intent.putExtra("markerOptions",  MarkerOptions().position(
-                    LatLng(postDtoOutput?.location!!.latitude, postDtoOutput?.location.longitude)).title(adresses.getAddressLine(0).toString()))
+                    LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude)).title(adresses.locality.toString()))
                 startActivityForResult(intent, LOCATION_CODE)
             }
 
