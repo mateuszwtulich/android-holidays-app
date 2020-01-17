@@ -14,23 +14,20 @@ import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
 import com.example.programowanieaplikacjimultimedialnych.R
 
-
-
-class HolidayListAdapter internal constructor(private var context: Context, private val onPostListner: OnPostListner) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
+class HolidayListAdapter internal constructor(private var context: Context, private val onPostListener: OnPostListener) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val formater = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    private val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
     private var postsList = emptyList<PostDtoOutput>()
     private var postListFiltered = emptyList<PostDtoOutput>()
-    private val geocoder = Geocoder(context)
+    private val geoCoder = Geocoder(context)
 
-    interface OnPostListner{
+    interface OnPostListener{
         fun onPostClick(position: Int, image:Int)
     }
 
     inner class HolidayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleItemView: TextView = itemView.findViewById(R.id.Title)
-
         val pagerView: ViewPager = itemView.findViewById(R.id.PagerView)
         val dateItemView : TextView = itemView.findViewById(R.id.dateText)
         val localItemView : TextView = itemView.findViewById(R.id.localization)
@@ -43,21 +40,19 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
     }
 
     override fun onBindViewHolder(holder: HolidayViewHolder, position: Int) {
-
         val current = postListFiltered[position]
-        val adapter = ViewPagerAdapter(context, current.uriList,onPostListner,position)
+        val adapter = ViewPagerAdapter(context, current.uriList,onPostListener,position,holder.pagerView.currentItem)
 
         holder.titleItemView.text = current.title
-        holder.dateItemView.text = current.date.format(formater)
+        holder.dateItemView.text = current.date.format(formatter)
 
-        val adresses = geocoder.getFromLocation(current.location.latitude, current.location.longitude, 1)[0]
-        holder.localItemView.text = adresses.locality.toString()
+        val addresses = geoCoder.getFromLocation(current.location.latitude, current.location.longitude, 1)[0]
+        holder.localItemView.text = addresses.locality.toString()
         holder.pagerView.adapter = adapter
         holder.pagerView.offscreenPageLimit = 6
 
-
         holder.itemView.setOnClickListener {
-            onPostListner.onPostClick(position,holder.pagerView.currentItem)
+            onPostListener.onPostClick(position,holder.pagerView.currentItem)
             Log.d("List postion:" , position.toString())
             Log.d("Image tag:" , "image${holder.pagerView.currentItem}")
         }
@@ -68,7 +63,6 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
             holder.indicator.visibility = View.INVISIBLE
 
         holder.indicator.attachToPager(holder.pagerView)
-
     }
 
     internal fun setPosts(posts: List<PostDtoOutput>) {
@@ -97,10 +91,8 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
                             filteredList.add(row)
                         }
                     }
-
                     postListFiltered = filteredList
                 }
-
                 val filterResults = FilterResults()
                 filterResults.values = postListFiltered
                 return filterResults

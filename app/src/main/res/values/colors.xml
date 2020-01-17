@@ -18,4 +18,8 @@
 
     <color name="gray">#D1CDCD</color>
 
+    <color name="searchOne">#00b0ff</color>
+    <color name="searchTwo">#4fc3f7</color>
+    <color name="searchThree">#42a5f5</color>
+
 </resources>

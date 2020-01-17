@@ -2,15 +2,23 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.renderscript.RenderScript
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.viewpager.widget.PagerAdapter
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
-class ViewPagerAdapter internal constructor(private val context: Context, private val imageUrls: List<Uri>,private val onPostListner: HolidayListAdapter.OnPostListner?,private val position_post: Int) :
+class ViewPagerAdapter internal constructor(private val context: Context,
+                                            private val imageUrls: List<Uri>,
+                                            private val onPostListener: HolidayListAdapter.OnPostListener?,
+                                            private val position_post: Int,
+                                            private val positionImage: Int) :
     PagerAdapter(){
 
     override fun getCount(): Int {
@@ -22,24 +30,35 @@ class ViewPagerAdapter internal constructor(private val context: Context, privat
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val imageView = ImageView(context)
+
+        val imageView = if(positionImage == position)
+            picassoLoadWithPriority(position,Picasso.Priority.HIGH)
+        else
+            picassoLoadWithPriority(position,Picasso.Priority.NORMAL)
 
         imageView.transitionName = "trans_($position_post,$position)"
         imageView.tag = "image$position"
 
-        Picasso.get()
-            .load(imageUrls[position])
-            .fit()
-            .centerCrop()
-            .into(imageView)
         container.addView(imageView)
 
         imageView.setOnClickListener {
             Log.d("Image tag:" , imageView.tag.toString())
             Log.d("List postion:" , position_post.toString())
-            onPostListner?.onPostClick(position_post,position)
+            onPostListener?.onPostClick(position_post,position)
         }
 
+        return imageView
+    }
+
+    private fun picassoLoadWithPriority(position :Int, priority: Picasso.Priority) :ImageView{
+        val imageView = ImageView(context)
+
+        Picasso.get()
+            .load(imageUrls[position])
+            .centerCrop()
+            .priority(priority)
+            .fit()
+            .into(imageView)
         return imageView
     }
 

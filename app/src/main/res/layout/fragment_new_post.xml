@@ -82,6 +82,7 @@
                     app:errorEnabled="true"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginTop="270dp">
+
                 <com.google.android.material.textfield.TextInputEditText
                         style="@style/TextInputEditTextStyle"
                         android:layout_width="match_parent"
@@ -172,7 +173,6 @@
                         android:lines="3"
                         android:maxLength="250"
                         android:inputType="textMultiLine"/>
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--<Space-->

@@ -36,20 +36,19 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     lateinit var postDtoOutput: PostDtoOutput
     lateinit var bottomSheetDialog: BottomSheetDialog
-    private val formater = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    private val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-    interface PostFragmentListner {
-        fun updatePF(bundle: Bundle)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         postponeEnterTransition()
+
         val view = inflater.inflate(R.layout.fragment_post, container, false)
+        postponeEnterTransition()
 
         if (arguments != null) {
             postDtoOutput = arguments?.getParcelable("post")!!
             val array = arguments?.getIntArray("positions")
-
             val title: TextView = view.findViewById(R.id.Title)
             val description: TextView = view.findViewById(R.id.description)
             val localization: TextView = view.findViewById(R.id.localization)
@@ -59,12 +58,10 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
             val closeButton = view.findViewById<ImageButton>(R.id.closeButton)
             val expandButton = view.findViewById<ImageButton>(R.id.expandMenu)
 
-
             closeButton.setOnClickListener {
                 Thread.sleep(150)
                (activity as MainActivity).supportFragmentManager.popBackStack()
             }
-
 
             postPosition = array!![0]
             imagePosition = array[1]
@@ -74,12 +71,11 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
             val geocoder = Geocoder(context)
             val adresses = geocoder.getFromLocation(postDtoOutput.location.latitude, postDtoOutput.location.longitude, 1)[0]
             localization.text = adresses.locality.toString()
-            date.text = postDtoOutput.date.format(formater)
+            date.text = postDtoOutput.date.format(formatter)
 
-            val adapter = ViewPagerAdapter(context!!, postDtoOutput.uriList, null, array[0])
+            val adapter = ViewPagerAdapter(context!!, postDtoOutput.uriList, null, array[0],pagerView.currentItem)
             pagerView.adapter = adapter
             pagerView.offscreenPageLimit = 6
-
 
             if (postDtoOutput.uriList.count() > 1)
                 indicator.visibility = View.VISIBLE
@@ -89,10 +85,8 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
             indicator.attachToPager(pagerView)
             pagerView.setCurrentItem(imagePosition, false)
 
-            (activity as MainActivity).scheduleStartPostponedTransition(view.findViewById<ViewPager>(R.id.PagerView))
-
             view.locationsMap.setOnClickListener {
-                val intent = Intent(getActivity(), LocationsOnMapActivity::class.java)
+                val intent = Intent(activity, LocationsOnMapActivity::class.java)
                 intent.putExtra("postsList", arguments?.getParcelableArrayList<PostDtoOutput>("postsList"))
                 intent.putExtra("markerOptions",  MarkerOptions().position(
                     LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude)).title(adresses.locality.toString()))
@@ -101,12 +95,9 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
 
             expandButton.setOnClickListener {
                 bottomSheetDialog  =  BottomSheetDialog()
-
                 bottomSheetDialog.show(activity!!.supportFragmentManager,"example")
             }
-
-          //  (activity as MainActivity).scheduleStartPostponedTransition(pagerView)
-
+            startPostponedEnterTransition()
         }
         return view
     }
@@ -114,30 +105,33 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
     override fun delete() {
         GlobalScope.launch {
             holidayViewModel.deletePost(postDtoOutput)
-
         }
         bottomSheetDialog.dismiss()
         val manager = (activity as  MainActivity).supportFragmentManager
         manager.popBackStackImmediate()
     }
 
+    override fun edit(){
 
-    override fun onStart() {
-        super.onStart()
-        startPostponedEnterTransition()
+        val fragment = EditFragment.newInstance()
+        val bundle  = Bundle()
+        bundle.putParcelable("post",postDtoOutput)
+        bottomSheetDialog.dismiss()
+        fragment.arguments = bundle
+        (activity as  MainActivity).replaceFragment(fragment)
     }
 
-    override fun onStop() {
-        super.onStop()
-
-        val bundle = Bundle()
-        val arr = intArrayOf(postPosition, view!!.findViewById<ViewPager>(R.id.PagerView).currentItem)
-        bundle.putIntArray("position",arr)
-
-        Log.d("PostFragment :", "Tab[${arr[0]},${arr[1]}]")
-        (activity as MainActivity).updatePF(bundle)
-
+    override fun share() {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TITLE, postDtoOutput.title)
+            putExtra(Intent.EXTRA_STREAM, postDtoOutput.uriList[1])
+            type = "image/jpeg"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser( shareIntent , "Udostępnij"))
     }
+
 
     companion object {
         @JvmStatic
