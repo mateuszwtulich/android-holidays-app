@@ -92,7 +92,7 @@ class NewPostFragment : Fragment() {
     }
 
     fun startLocalizationSearch(){
-        val intent = Intent(getActivity(), LocationSearch::class.java)
+        val intent = Intent(activity, LocationSearch::class.java)
 
         if(!text_input_location.editText!!.text.isEmpty()) {
             intent.putExtra("localization", locationCoordinates)
