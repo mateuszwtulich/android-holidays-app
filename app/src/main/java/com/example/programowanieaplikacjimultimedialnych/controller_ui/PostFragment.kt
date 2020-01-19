@@ -1,8 +1,10 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
+import android.app.Activity
 import android.content.Intent
 import android.location.Geocoder
 import android.app.Application
+import android.location.Address
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -24,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_post.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.synthetic.main.activity_main.*
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
 
@@ -42,6 +45,8 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         postponeEnterTransition()
+        bottomSheetDialog  =  BottomSheetDialog()
+
 
         val view = inflater.inflate(R.layout.fragment_post, container, false)
         postponeEnterTransition()
@@ -68,9 +73,9 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
 
             title.text = postDtoOutput.title
             description.text = postDtoOutput.text
-            val geocoder = Geocoder(context)
-            val adresses = geocoder.getFromLocation(postDtoOutput.location.latitude, postDtoOutput.location.longitude, 1)[0]
-            localization.text = adresses.locality.toString()
+
+            val address = getAddress(LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude))
+            localization.text = address
             date.text = postDtoOutput.date.format(formatter)
 
             val adapter = ViewPagerAdapter(context!!, postDtoOutput.uriList, null, array[0],pagerView.currentItem)
@@ -89,18 +94,34 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
                 val intent = Intent(activity, LocationsOnMapActivity::class.java)
                 intent.putExtra("postsList", arguments?.getParcelableArrayList<PostDtoOutput>("postsList"))
                 intent.putExtra("markerOptions",  MarkerOptions().position(
-                    LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude)).title(adresses.locality.toString()))
+                    LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude)).title(address))
                 startActivityForResult(intent, LOCATION_CODE)
             }
 
             expandButton.setOnClickListener {
-                bottomSheetDialog  =  BottomSheetDialog()
                 bottomSheetDialog.show(activity!!.supportFragmentManager,"example")
             }
             startPostponedEnterTransition()
         }
         return view
     }
+
+    private fun getAddress(location: LatLng): String {
+        val geocoder = Geocoder(context)
+        val addresses: List<Address>?
+        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+        if (!addresses.isNullOrEmpty()) {
+            if (addresses[0].locality != null) {
+                return addresses[0].locality
+            }
+            if (addresses[0].countryName != null) {
+                return addresses[0].countryName
+            }
+        }
+        return "No valid address"
+    }
+
 
     override fun delete() {
         GlobalScope.launch {
@@ -109,6 +130,25 @@ class PostFragment : Fragment(),BottomSheetDialog.Sheet {
         bottomSheetDialog.dismiss()
         val manager = (activity as  MainActivity).supportFragmentManager
         manager.popBackStackImmediate()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+
+        if (requestCode == LOCATION_CODE && (resultCode == Activity.RESULT_OK ))
+            if (data != null) {
+                val fragment = PostFragment.newInstance()
+
+                fragment.arguments = Bundle()
+                fragment.arguments?.putParcelableArrayList("postsList", data!!.getParcelableArrayListExtra("postsList"))
+                fragment.arguments?.putParcelable("post", data!!.getParcelableArrayListExtra<PostDtoOutput>("post")[0])
+                fragment.arguments?.putIntArray("positions", intArrayOf(0, 0))
+
+                (activity as MainActivity).supportFragmentManager.beginTransaction()
+                    .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment, "postFragment")
+                    .commit()
+            }
     }
 
     override fun edit(){

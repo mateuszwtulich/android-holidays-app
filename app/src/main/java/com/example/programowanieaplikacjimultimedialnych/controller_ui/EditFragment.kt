@@ -6,6 +6,7 @@ import android.app.Application
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
@@ -38,7 +39,8 @@ class EditFragment : Fragment() {
     private lateinit var postDtoOutput: PostDtoOutput
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     private var imagesPaths: ArrayList<String> = ArrayList()
-    private var markerOptions: MarkerOptions = MarkerOptions()
+    private lateinit var locationCoordinates: LatLng
+    private lateinit var locationAddress: String
     private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,14 +60,10 @@ class EditFragment : Fragment() {
             postDtoOutput.uriList.forEach{  elem  -> list.add(elem.toString())}
             imagesPaths = list
 
-            val  marker = MarkerOptions()
-            marker.position(LatLng(postDtoOutput.location.latitude,postDtoOutput.location.longitude))
-            markerOptions = marker
+            locationCoordinates = LatLng(postDtoOutput.location.latitude, postDtoOutput.location.longitude)
+            locationAddress = getAddress(locationCoordinates)
 
-            val geocoder = Geocoder(context)
-            val adresses = geocoder.getFromLocation(postDtoOutput.location.latitude, postDtoOutput.location.longitude, 1)[0]
-
-            view.text_input_location.editText!!.setText(adresses.locality.toString())
+            view.text_input_location.editText!!.setText(locationAddress)
 
             if (imagesPaths.count() > 1) {
                 view.indicator.visibility = View.VISIBLE
@@ -96,15 +94,29 @@ class EditFragment : Fragment() {
                 addDate(calendar, year, month, day)
             }
 
-            view.text_input_location.setStartIconOnClickListener {
-                val intent = Intent(getActivity(), LocationSearch::class.java)
-
-                if(markerOptions.title != null) intent.putExtra("markerOptions", markerOptions)
-                startActivityForResult(intent, EditFragment.LOCATION_CODE)
+            view.text_input_date.setOnClickListener {
+                addDate(calendar, year, month, day)
             }
 
-        }
+            view.dateText.setOnClickListener{
+                addDate(calendar, year, month, day)
+            }
 
+            view.text_input_location.setStartIconOnClickListener {
+                startLocalizationSearch()
+            }
+
+            view.text_input_location.setOnClickListener {
+                startLocalizationSearch()
+            }
+
+            view.locationText.setOnClickListener {
+                startLocalizationSearch()
+            }
+
+
+
+        }
         return view
     }
 
@@ -117,7 +129,7 @@ class EditFragment : Fragment() {
             val text = view!!.text_input_description.editText!!.text.toString()
             val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
             val uri = imagesPaths
-            val location = Location(markerOptions.position.latitude, markerOptions.position.longitude)
+            val location = Location(locationCoordinates.latitude, locationCoordinates.longitude)
 
             val post = PostDtoInput(
                 id = postDtoOutput.id,
@@ -163,6 +175,16 @@ class EditFragment : Fragment() {
         datePicker.show()
     }
 
+    fun startLocalizationSearch(){
+        val intent = Intent(getActivity(), LocationSearch::class.java)
+
+        if(!text_input_location.editText!!.text.isEmpty()) {
+            intent.putExtra("localization", locationCoordinates)
+            intent.putExtra("address", locationAddress)
+        }
+        startActivityForResult(intent, LOCATION_CODE)
+    }
+
     fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
@@ -174,8 +196,9 @@ class EditFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == EditFragment.LOCATION_CODE) {
-            markerOptions = data!!.getParcelableExtra("localization")
-            text_input_location.locationText.setText(markerOptions.title.toString())
+            locationCoordinates = data!!.getParcelableExtra("localization")
+            locationAddress = data!!.getStringExtra("address")
+            text_input_location.locationText.setText(locationAddress)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == EditFragment.IMAGE_PICK_CODE) {
             imagesPaths.clear()
@@ -212,6 +235,22 @@ class EditFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun getAddress(location: LatLng): String {
+        val geocoder = Geocoder(context)
+        val addresses: List<Address>?
+        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+        if (!addresses.isNullOrEmpty()) {
+            if (addresses[0].locality != null) {
+                return addresses[0].locality
+            }
+            if (addresses[0].countryName != null) {
+                return addresses[0].countryName
+            }
+        }
+        return "No valid address"
     }
 
     companion object {

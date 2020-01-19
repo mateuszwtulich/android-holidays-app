@@ -1,6 +1,7 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.content.Context
+import android.location.Address
 import android.location.Geocoder
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoO
 import ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
 import java.time.format.DateTimeFormatter
 import com.example.programowanieaplikacjimultimedialnych.R
+import com.google.android.gms.maps.model.LatLng
 
 class HolidayListAdapter internal constructor(private var context: Context, private val onPostListener: OnPostListener) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
@@ -46,8 +48,7 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
         holder.titleItemView.text = current.title
         holder.dateItemView.text = current.date.format(formatter)
 
-        val addresses = geoCoder.getFromLocation(current.location.latitude, current.location.longitude, 1)[0]
-        holder.localItemView.text = addresses.locality.toString()
+        holder.localItemView.text = getAddress(LatLng(current.location.latitude, current.location.longitude ))
         holder.pagerView.adapter = adapter
         holder.pagerView.offscreenPageLimit = 6
 
@@ -64,6 +65,23 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
 
         holder.indicator.attachToPager(holder.pagerView)
     }
+
+    private fun getAddress(location: LatLng): String {
+        val geocoder = Geocoder(context)
+        val addresses: List<Address>?
+        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+        if (!addresses.isNullOrEmpty()) {
+            if (addresses[0].locality != null) {
+                return addresses[0].locality
+            }
+            if (addresses[0].countryName != null) {
+                return addresses[0].countryName
+            }
+        }
+        return "No valid address"
+    }
+
 
     internal fun setPosts(posts: List<PostDtoOutput>) {
         this.postsList = posts.reversed()

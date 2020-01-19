@@ -222,7 +222,7 @@ class MainFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SPEACH_INPUT && (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED)) {
-            if (data != null) {
+                if (data != null) {
                 val str = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).toArray()!![0] as String
                 searchText = str
                 onSearchConfirmed(str)

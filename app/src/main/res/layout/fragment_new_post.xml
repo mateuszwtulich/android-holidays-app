@@ -153,6 +153,7 @@
                     app:counterMaxLength="250"
                     android:hint="Description"
                     app:errorEnabled="true"
+                    android:gravity="top|right"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="12dp"
@@ -168,9 +169,9 @@
                         style="@style/TextInputEditTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:maxLines="10"
                         android:lines="3"
+                        android:gravity="top"
                         android:maxLength="250"
                         android:inputType="textMultiLine"/>
             </com.google.android.material.textfield.TextInputLayout>

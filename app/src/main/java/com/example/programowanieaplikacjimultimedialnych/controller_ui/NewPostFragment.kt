@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,9 @@ import androidx.fragment.app.Fragment
 import com.example.programowanieaplikacjimultimedialnych.view_model.HolidayViewModel
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.Location
 import com.example.programowanieaplikacjimultimedialnych.view_model.dto.PostDtoInput
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.fragment_main.view.*
 import kotlinx.android.synthetic.main.fragment_new_post.*
 import kotlinx.android.synthetic.main.fragment_new_post.view.*
 import kotlinx.coroutines.GlobalScope
@@ -32,7 +35,8 @@ class NewPostFragment : Fragment() {
 
     private val holidayViewModel: HolidayViewModel = HolidayViewModel(application = Application())
     private var imagesPaths: ArrayList<String> = ArrayList()
-    private var markerOptions: MarkerOptions = MarkerOptions()
+    private lateinit var locationCoordinates: LatLng
+    private lateinit var locationAddress: String
     private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     override fun onCreateView(
@@ -63,13 +67,38 @@ class NewPostFragment : Fragment() {
             addDate(calendar, year, month, day)
         }
 
-        view.text_input_location.setStartIconOnClickListener {
-            val intent = Intent(getActivity(), LocationSearch::class.java)
-
-            if(markerOptions.title != null) intent.putExtra("markerOptions", markerOptions)
-            startActivityForResult(intent, LOCATION_CODE)
+        view.text_input_date.setOnClickListener {
+            addDate(calendar, year, month, day)
         }
+
+        view.dateText.setOnClickListener{
+            addDate(calendar, year, month, day)
+        }
+
+        view.text_input_location.setStartIconOnClickListener {
+            startLocalizationSearch()
+        }
+
+        view.text_input_location.setOnClickListener {
+            startLocalizationSearch()
+        }
+
+        view.locationText.setOnClickListener {
+            startLocalizationSearch()
+        }
+
+
         return view
+    }
+
+    fun startLocalizationSearch(){
+        val intent = Intent(getActivity(), LocationSearch::class.java)
+
+        if(!text_input_location.editText!!.text.isEmpty()) {
+            intent.putExtra("localization", locationCoordinates)
+            intent.putExtra("address", locationAddress)
+        }
+        startActivityForResult(intent, LOCATION_CODE)
     }
 
     fun savePost() {
@@ -81,7 +110,7 @@ class NewPostFragment : Fragment() {
             val text = view!!.text_input_description.editText!!.text.toString()
             val localDate = LocalDate.parse(view!!.text_input_date.editText!!.text.toString(), formatter)
             val uri = imagesPaths
-            val location = Location(markerOptions.position.latitude, markerOptions.position.longitude)
+            val location = Location(locationCoordinates.latitude, locationCoordinates.longitude)
 
             val post = PostDtoInput(
                 id = 0,
@@ -134,8 +163,9 @@ class NewPostFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK && requestCode == LOCATION_CODE) {
-            markerOptions = data!!.getParcelableExtra("localization")
-            text_input_location.locationText.setText(markerOptions.title.toString())
+            locationCoordinates = data!!.getParcelableExtra("localization")
+            locationAddress = data!!.getStringExtra("address")
+            text_input_location.locationText.setText(locationAddress)
         }
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             imagesPaths.clear()

@@ -2,6 +2,7 @@ package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.location.Address
@@ -13,7 +14,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.programowanieaplikacjimultimedialnych.R
@@ -107,7 +107,6 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                     .setTypeFilter(TypeFilter.CITIES)
                     .setSessionToken(token)
                     .setQuery(charSequence.toString()).build()
-                var answer = "0"
 
                 placesClient.findAutocompletePredictions(predictionsRequest)
                     .addOnCompleteListener { task ->
@@ -117,12 +116,7 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                             prediction.getFullText(null).toString()
                         })
                         searchPlace.showSuggestionsList()
-                        if (predictionList.size > 0) {
-                            answer = predictionList[0].toString()
-                        }
                     }
-                Toast.makeText(baseContext, answer, Toast.LENGTH_SHORT).show()
-
             }
 
             override fun afterTextChanged(editable: Editable) {
@@ -147,8 +141,10 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
     private fun setUpMap() {
 
-        if(intent.hasExtra("markerOptions")){
-            val markerOptions = intent.getParcelableExtra("markerOptions") as MarkerOptions
+        if (intent.hasExtra("localization") && intent.hasExtra("address")) {
+            val location = intent.getParcelableExtra<LatLng>("localization")
+            val address = intent.getStringExtra("address")
+            val markerOptions = MarkerOptions().title(address).position(location)
             placeMarkerOnMap(markerOptions.position)
         }
 
@@ -157,7 +153,8 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     override fun onMarkerClick(p0: Marker?): Boolean {
         fab_adding_location.show()
         fab_adding_location.setOnClickListener {
-            intent.putExtra("localization", markerOptions)
+            intent.putExtra("localization", p0!!.position)
+            intent.putExtra("address", p0!!.title)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
@@ -184,7 +181,15 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
         val addresses: List<Address>?
         addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
-        return addresses[0].locality
+        if (!addresses.isNullOrEmpty()) {
+            if (addresses[0].locality != null) {
+                return addresses[0].locality
+            }
+            if (addresses[0].countryName != null) {
+                return addresses[0].countryName
+            }
+        }
+        return "No valid address"
     }
 
     @SuppressLint("MissingPermission")
@@ -196,9 +201,11 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         }
 
         map.isMyLocationEnabled = true
@@ -208,7 +215,7 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                if(!intent.hasExtra("markerOptions")) {
+                if (!intent.hasExtra("localization") && !intent.hasExtra("address")) {
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, ZOOM))
                 }
             }
@@ -223,8 +230,9 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
 
         map.setOnMapLongClickListener { latLng ->
             markerList.forEach {
-                if(abs(it.position.latitude - latLng.latitude) < 0.02 &&
-                    abs(it.position.longitude - latLng.longitude) < 0.02)
+                if (abs(it.position.latitude - latLng.latitude) < 0.02 &&
+                    abs(it.position.longitude - latLng.longitude) < 0.02
+                )
                     it.remove()
             }
 
@@ -233,7 +241,19 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
                         abs(it.position.longitude - latLng.longitude) < 0.02)
             }
         }
-
         setUpMap()
+        onTitleClickListener()
+    }
+
+    fun onTitleClickListener() {
+        map.setOnInfoWindowClickListener(object : GoogleMap.OnInfoWindowClickListener {
+
+            override fun onInfoWindowClick(p0: Marker?) {
+                intent.putExtra("localization", p0!!.position)
+                intent.putExtra("address", p0!!.title)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+        })
     }
 }

@@ -1,11 +1,17 @@
 package com.example.programowanieaplikacjimultimedialnych.controller_ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.provider.MediaStore
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.programowanieaplikacjimultimedialnych.R
@@ -17,10 +23,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_post.*
 
 class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private lateinit var map: GoogleMap
@@ -49,6 +55,14 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+        map.uiSettings.isZoomControlsEnabled = true
+        map.setOnMarkerClickListener(this)
+        setUpMap()
+    }
+
     private fun setUpMap() {
 
         if(intent.hasExtra("markerOptions")){
@@ -60,9 +74,12 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
 
         postList.forEach { post ->
             val latLng = LatLng(post.location.latitude, post.location.longitude)
-            val markerOptions = MarkerOptions().position(latLng).title(post.title)
+            var bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, post.uriList[0])
+            val markerOptions = MarkerOptions().position(latLng).title(post.title).icon(BitmapDescriptorFactory.fromBitmap(bitmap.scale(300)))
             markerList.add(map.addMarker(markerOptions))
         }
+
+        map.isMyLocationEnabled = true
 
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -73,38 +90,54 @@ class LocationsOnMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE
             )
-
         }
-        map.isMyLocationEnabled = true
         map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
     }
 
-    override fun onMarkerClick(p0: Marker?): Boolean = false
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        postList.forEach { post ->
+            if (p0?.position == LatLng(post.location.latitude, post.location.longitude)) {
 
-    private fun getLatLng(location: String): LatLng {
-        val geocoder = Geocoder(this)
-        val adresses: List<Address> = geocoder.getFromLocationName(location, 1)
-        if (adresses.isNotEmpty()) {
-            return LatLng(adresses[0].latitude, adresses[0].longitude)
+                val postsArray = ArrayList<PostDtoOutput>()
+                postsArray.addAll(postList)
+
+                val postA = ArrayList<PostDtoOutput>()
+                postA.add(post)
+
+                val intent = Intent(this@LocationsOnMapActivity,MainActivity::class.java)
+                intent.putParcelableArrayListExtra("post", postA)
+                intent.putParcelableArrayListExtra("postsList", postsArray)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
-        return LatLng(0.0, 0.0)
+        return false
     }
 
-    private fun getAddress(location: LatLng): String {
-        val geocoder = Geocoder(this)
-        val addresses: List<Address>?
-        addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+    fun Bitmap.scale(maxWidthAndHeight:Int):Bitmap{
+        var newWidth = 0
+        var newHeight = 0
 
-        return addresses[0].getAddressLine(0)
-    }
+        if (this.width >= this.height){
+            val ratio:Float = this.width.toFloat() / this.height.toFloat()
 
-    @SuppressLint("MissingPermission")
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
+            newWidth = maxWidthAndHeight
+            // Calculate the new height for the scaled bitmap
+            newHeight = Math.round(maxWidthAndHeight / ratio)
+        }else{
+            val ratio:Float = this.height.toFloat() / this.width.toFloat()
 
-        setUpMap()
+            // Calculate the new width for the scaled bitmap
+            newWidth = Math.round(maxWidthAndHeight / ratio)
+            newHeight = maxWidthAndHeight
+        }
+
+        return Bitmap.createScaledBitmap(
+            this,
+            newWidth,
+            newHeight,
+            false
+        )
     }
 }
