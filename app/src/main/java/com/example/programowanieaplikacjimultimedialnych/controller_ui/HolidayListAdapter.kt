@@ -22,7 +22,6 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
     private val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
     private var postsList = emptyList<PostDtoOutput>()
     private var postListFiltered = emptyList<PostDtoOutput>()
-    private val geoCoder = Geocoder(context)
 
     interface OnPostListener{
         fun onPostClick(position: Int, image:Int)
@@ -103,8 +102,8 @@ class HolidayListAdapter internal constructor(private var context: Context, priv
                     for (row in postsList) {
                         if (row.text.toLowerCase().contains(charString) ||
                             row.title.toLowerCase().contains(charString) ||
-                            row.date.toString().contains(charString) ||
-                            row.location.toString().contains(charString))
+                            row.date.format(formatter).toLowerCase().contains(charString) ||
+                            getAddress(LatLng(row.location.latitude,row.location.longitude)).toLowerCase().contains(charString))
                         {
                             filteredList.add(row)
                         }
