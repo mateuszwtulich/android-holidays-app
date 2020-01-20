@@ -162,6 +162,10 @@ class LocationSearch : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMark
     }
 
     private fun placeMarkerOnMap(location: LatLng) {
+        if(!markerList.isEmpty()){
+            markerList[0].remove()
+            markerList.removeAt(0)
+        }
         markerOptions = MarkerOptions().position(location).title(getAddress(location))
         markerList.add(map.addMarker(markerOptions))
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(location, ZOOM))
