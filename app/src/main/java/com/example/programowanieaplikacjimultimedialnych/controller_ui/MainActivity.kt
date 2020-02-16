@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             .addSharedElement(view, sharedElementName)
-            //.setReorderingAllowed(true)
             .replace(com.example.programowanieaplikacjimultimedialnych.R.id.fragment_container, fragment,"postFragment")
             .addToBackStack(null)
             .commit()

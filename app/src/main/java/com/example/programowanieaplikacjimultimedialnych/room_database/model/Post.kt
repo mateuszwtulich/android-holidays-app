@@ -9,5 +9,13 @@ class Post(@PrimaryKey(autoGenerate = true) val id: Int,
            val text : String,
            val date : String,
            val latitude : Double,
-           val longitude : Double)
+           val longitude : Double){
+
+    override fun equals(other: Any?): Boolean {
+        other as Post
+        return this.title == other.title && this.text == other.text
+                && this.date == other.date && this.latitude == other.latitude
+                && this.longitude == other.longitude
+    }
+}
 
