@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 class HolidayListAdapter internal constructor(private var context: Context, private val onPostListener: OnPostListener) : RecyclerView.Adapter<HolidayListAdapter.HolidayViewHolder>(), Filterable {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    private val formatter = DateTimeFormatter.ofPattern("dd-MMMM-yyyy")
     private var postsList = emptyList<PostDtoOutput>()
     private var postListFiltered = emptyList<PostDtoOutput>()
     private val geoCoder = Geocoder(context)
